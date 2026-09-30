@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberShield Mini | Security Operations Center</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <!-- ================= ANIMATED BACKGROUND ================= -->
+    <div class="cyber-grid"></div>
+    <div class="ambient ambient-1"></div>
+    <div class="ambient ambient-2"></div>
+    <div class="ambient ambient-3"></div>
+
+    <!-- Particles -->
+    <div class="particles">
+        <span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span>
+    </div>
+
+    <!-- Dragon Guardian -->
+    <div class="dragon-guardian">
+        <img src="{{ url_for('static', filename='images/cyber-dragon.png') }}" alt="Cyber Guardian">
+    </div>
+
+    <main class="dashboard">
+
+        <!-- ================= TOP HEADER ================= -->
+        <header class="top-header">
+            <div class="brand">
+                <div class="brand-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 2L20 5V11C20 16.5 16.5 20.2 12 22C7.5 20.2 4 16.5 4 11V5L12 2Z"></path>
+                        <path d="M9 12L11 14L15.5 9.5"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h1>CYBERSHIELD <span>MINI</span></h1>
+                    <p>SECURITY OPERATIONS CENTER • LOCAL ENGINE</p>
+                </div>
+            </div>
+
+            <div class="header-right">
+                <div class="system-status">
+                    <span class="status-dot"></span>
+                    <div>
+                        <strong>SYSTEM ONLINE</strong>
+                        <small>LOCAL SECURITY ENGINE ACTIVE</small>
+                    </div>
+                </div>
+                <div class="system-status threat-level">
+                    <span class="status-dot orange"></span>
+                    <div>
+                        <strong>THREAT LEVEL</strong>
+                        <small>{{ risk_level|default('LOW', true) }}</small>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- ================= SECURITY CORE ================= -->
+        <section class="security-core">
+            <div class="core-glow"></div>
+            <div class="scan-line"></div>
+
+            <!-- Decorative rings -->
+            <div class="core-ring ring-1"></div>
+            <div class="core-ring ring-2"></div>
+            <div class="core-ring ring-3"></div>
+
+            <div class="core-content">
+                <div class="core-label">
+                    <span>⚡</span> SECURITY CORE
+                </div>
+
+                <div class="score-ring" style="--score: {{ security_score_value|default(100, true) }};">
+                    <div class="score-inner">
+                        <strong>{{ security_score_value|default(100, true) }}</strong>
+                        <span>/ 100</span>
+                    </div>
+                </div>
+
+                <h2>OVERALL SECURITY SCORE</h2>
+
+                <div class="risk-status">
+                    <span class="risk-dot"></span>
+                    {{ risk_level|default('LOW RISK', true) }}
+                </div>
+
+                <div class="core-meta">
+                    <div class="meta-item">
+                        <span>LAST SCAN</span>
+                        <strong>JUST NOW</strong>
+                    </div>
+                    <div class="meta-item">
+                        <span>MODULES</span>
+                        <strong>08 ACTIVE</strong>
+                    </div>
+                    <div class="meta-item">
+                        <span>STATUS</span>
+                        <strong class="green">PROTECTED</strong>
+                    </div>
+                </div>
+
+                <a href="{{ url_for('security_score') }}" class="scan-button">
+                    <span>⚡</span>
+                    OPEN FULL SECURITY SCAN
+                    <b>→</b>
+                </a>
+            </div>
+        </section>
+
+        <!-- ================= QUICK STATS BAR ================= -->
+        <section class="stats-bar">
+            <div class="stat-card">
+                <div class="stat-icon blue">
+                    <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="13" rx="2"></rect><path d="M8 21H16"></path><path d="M12 17V21"></path></svg>
+                </div>
+                <div>
+                    <span>SYSTEM</span>
+                    <strong>MONITORED</strong>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon cyan">
+                    <svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="2"></circle><circle cx="5" cy="19" r="2"></circle><circle cx="19" cy="19" r="2"></circle><path d="M12 7V12"></path><path d="M12 12L5 17"></path><path d="M12 12L19 17"></path></svg>
+                </div>
+                <div>
+                    <span>NETWORK</span>
+                    <strong>SECURE</strong>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon purple">
+                    <svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"></rect><path d="M7 10H10"></path><path d="M14 10H17"></path><path d="M7 14H17"></path></svg>
+                </div>
+                <div>
+                    <span>PORTS</span>
+                    <strong>SCAN READY</strong>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon green">
+                    <svg viewBox="0 0 24 24"><path d="M12 3L19 6V11C19 16 16 19.5 12 21C8 19.5 5 16 5 11V6L12 3Z"></path><path d="M8 12L10.5 14.5L16 9"></path></svg>
+                </div>
+                <div>
+                    <span>SCORE</span>
+                    <strong>{{ security_score_value|default(100, true) }}/100</strong>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon orange">
+                    <svg viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="2"></rect><path d="M8 10V7C8 4.8 9.8 3 12 3C14.2 3 16 4.8 16 7V10"></path><circle cx="12" cy="15" r="1"></circle></svg>
+                </div>
+                <div>
+                    <span>PASSWORD</span>
+                    <strong>ANALYZER</strong>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon red">
+                    <svg viewBox="0 0 24 24"><path d="M4 5H20V19H4Z"></path><path d="M4 9H20"></path><path d="M4 14H20"></path><path d="M9 5V9"></path><path d="M15 9V14"></path><path d="M9 14V19"></path></svg>
+                </div>
+                <div>
+                    <span>FIREWALL</span>
+                    <strong>ACTIVE</strong>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SECURITY MODULES ================= -->
+        <section class="modules-section">
+            <div class="section-heading">
+                <div>
+                    <span>SECURITY MODULES</span>
+                    <small>SELECT A MODULE TO BEGIN DEEP ANALYSIS</small>
+                </div>
+                <div class="module-count">08 MODULES • ALL OPERATIONAL</div>
+            </div>
+
+            <div class="module-grid">
+
+                <!-- 01 SYSTEM INFORMATION -->
+                <a href="{{ url_for('system_info') }}" class="module-card blue">
+                    <div class="card-top">
+                        <div class="module-icon">
+                            <svg viewBox="0 0 24 24">
+                                <rect x="3" y="4" width="18" height="13" rx="2"></rect>
+                                <path d="M8 21H16"></path>
+                                <path d="M12 17V21"></path>
+                            </svg>
+                        </div>
+                        <span class="card-number">01</span>
+                    </div>
+                    <h3>SYSTEM INFORMATION</h3>
+                    <p>Deep inspection of operating system, processor, architecture, memory, and machine identity.</p>
+                    <div class="card-footer">
+                        <span class="badge">CORE</span>
+                        <div class="open-link">OPEN MODULE <span>→</span></div>
+                    </div>
+                </a>
+
+                <!-- 02 NETWORK -->
+                <a href="{{ url_for('network_config') }}" class="module-card cyan">
+                    <div class="card-top">
+                        <div class="module-icon">
+                            <svg viewBox="0 0 24 24">
+                                <circle cx="12" cy="5" r="2"></circle>
+                                <circle cx="5" cy="19" r="2"></circle>
+                                <circle cx="19" cy="19" r="2"></circle>
+                                <path d="M12 7V12"></path>
+                                <path d="M12 12L5 17"></path>
+                                <path d="M12 12L19 17"></path>
+                            </svg>
+                        </div>
+                        <span class="card-number">02</span>
+                    </div>
+                    <h3>NETWORK CONFIGURATION</h3>
+                    <p>Analyze local network interfaces, IP configuration, DNS, and connectivity posture.</p>
+                    <div class="card-footer">
+                        <span class="badge">NETWORK</span>
+                        <div class="open-link">OPEN MODULE <span>→</span></div>
+                    </div>
+                </a>
+
+                <!-- 03 OPEN PORT CHECK -->
+                <a href="{{ url_for('open_ports') }}" class="module-card purple">
+                    <div class="card-top">
+                        <div class="module-icon">
+                            <svg viewBox="0 0 24 24">
+                                <rect x="3" y="6" width="18" height="12" rx="2"></rect>
+                                <path d="M7 10H10"></path>
+                                <path d="M14 10H17"></path>
+                                <path d="M7 14H17"></path>
+                            </svg>
+                        </div>
+                        <span class="card-number">03</span>
+                    </div>
+                    <h3>OPEN PORT CHECK</h3>
+                    <p>Scan selected local ports and detect potentially exposed services and attack surfaces.</p>
+                    <div class="card-footer">
+                        <span class="badge">SCAN</span>
+                        <div class="open-link">OPEN MODULE <span>→</span></div>
+                    </div>
+                </a>
+
+                <!-- 04 SECURITY SCORE -->
+                <a href="{{ url_for('security_score') }}" class="module-card green">
+                    <div class="card-top">
+                        <div class="module-icon">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M12 3L19 6V11C19 16 16 19.5 12 21C8 19.5 5 16 5 11V6L12 3Z"></path>
+                                <path d="M8 12L10.5 14.5L16 9"></path>
+                            </svg>
+                        </div>
+                        <span class="card-number">04</span>
+                    </div>
+                    <h3>SECURITY SCORE</h3>
+                    <p>Full security assessment engine with risk scoring, findings, and prioritized recommendations.</p>
+                    <div class="card-footer">
+                        <span class="badge">CORE</span>
+                        <div class="open-link">OPEN MODULE <span>→</span></div>
+                    </div>
+                </a>
+
+                <!-- 05 PASSWORD ANALYZER -->
+                <a href="{{ url_for('password_analyzer') }}" class="module-card orange">
+                    <div class="card-top">
+                        <div class="module-icon">
+                            <svg viewBox="0 0 24 24">
+                                <rect x="5" y="10" width="14" height="10" rx="2"></rect>
+                                <path d="M8 10V7C8 4.8 9.8 3 12 3C14.2 3 16 4.8 16 7V10"></path>
+                                <circle cx="12" cy="15" r="1"></circle>
+                            </svg>
+                        </div>
+                        <span class="card-number">05</span>
+                    </div>
+                    <h3>PASSWORD ANALYZER</h3>
+                    <p>Evaluate password strength, detect weak patterns, and calculate estimated crack time.</p>
+                    <div class="card-footer">
+                        <span class="badge">AUTH</span>
+                        <div class="open-link">OPEN MODULE <span>→</span></div>
+                    </div>
+                </a>
+
+                <!-- 06 FIREWALL / NGFW -->
+                <a href="{{ url_for('firewall') }}" class="module-card red">
+                    <div class="card-top">
+                        <div class="module-icon">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M4 5H20V19H4Z"></path>
+                                <path d="M4 9H20"></path>
+                                <path d="M4 14H20"></path>
+                                <path d="M9 5V9"></path>
+                                <path d="M15 9V14"></path>
+                                <path d="M9 14V19"></path>
+                            </svg>
+                        </div>
+                        <span class="card-number">06</span>
+                    </div>
+                    <h3>FIREWALL / NGFW</h3>
+                    <p>Inspect firewall protection status and current defensive posture of the system.</p>
+                    <div class="card-footer">
+                        <span class="badge">DEFENSE</span>
+                        <div class="open-link">OPEN MODULE <span>→</span></div>
+                    </div>
+                </a>
+
+            </div>
+
+            <!-- ================= BOTTOM WIDE MODULES ================= -->
+            <div class="bottom-grid">
+
+                <!-- 07 FILE PERMISSIONS -->
+                <a href="{{ url_for('file_permission') }}" class="wide-card">
+                    <div class="wide-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M3 6H10L12 8H21V19H3Z"></path>
+                            <path d="M8 13H16"></path>
+                            <path d="M8 16H14"></path>
+                        </svg>
+                    </div>
+                    <div class="wide-info">
+                        <span>07 • ACCESS CONTROL</span>
+                        <h3>FILE PERMISSIONS</h3>
+                        <p>Audit file and folder access rights to identify potential privilege and permission weaknesses.</p>
+                    </div>
+                    <div class="wide-arrow">→</div>
+                </a>
+
+                <!-- 08 PROFESSIONAL REPORT -->
+                <a href="{{ url_for('report') }}" class="wide-card report">
+                    <div class="wide-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M6 3H15L19 7V21H6Z"></path>
+                            <path d="M14 3V8H19"></path>
+                            <path d="M9 12H16"></path>
+                            <path d="M9 16H16"></path>
+                        </svg>
+                    </div>
+                    <div class="wide-info">
+                        <span>08 • INTELLIGENCE</span>
+                        <h3>PROFESSIONAL SECURITY REPORT</h3>
+                        <p>Generate a complete professional security assessment report with findings and recommendations.</p>
+                    </div>
+                    <div class="wide-arrow">→</div>
+                </a>
+
+            </div>
+        </section>
+
+        <!-- ================= SYSTEM LOG STRIP ================= -->
+        <section class="log-strip">
+            <div class="log-label">SYSTEM LOG</div>
+            <div class="log-entries">
+                <span class="log-item"><span class="log-time">00:00</span> Security Core initialized</span>
+                <span class="log-item"><span class="log-time">00:01</span> All 8 modules online</span>
+                <span class="log-item"><span class="log-time">00:02</span> Local engine ready</span>
+                <span class="log-item success"><span class="log-time">NOW</span> System status: PROTECTED</span>
+            </div>
+        </section>
+
+        <!-- ================= FOOTER ================= -->
+        <footer>
+            <div>
+                CYBERSHIELD MINI
+                <span>•</span>
+                LOCAL SECURITY ASSESSMENT TOOL
+                <span>•</span>
+                v2.0 PRO
+            </div>
+            <div>
+                SECURITY ENGINE
+                <span class="footer-online"></span>
+                ONLINE • REAL-TIME
+            </div>
+        </footer>
+
+    </main>
+
+</body>
+</html>

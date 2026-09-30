@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Score | CyberShield Mini Pro</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --neon-cyan: #00f0ff;
+            --neon-purple: #b026ff;
+            --neon-pink: #ff2a6d;
+            --neon-green: #00ff9d;
+            --neon-blue: #3a7bd5;
+            --bg-dark: #02040a;
+            --card-bg: rgba(8, 14, 28, 0.75);
+            --glass: rgba(12, 20, 40, 0.55);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Rajdhani', system-ui, sans-serif;
+            background: var(--bg-dark);
+            color: #e0f7ff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* ===== ANIMATED BACKGROUND ===== */
+        .bg-grid {
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+            background-size: 55px 55px;
+            z-index: 0;
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { background-position: 0 0; }
+            100% { background-position: 55px 55px; }
+        }
+
+        .bg-glow {
+            position: fixed;
+            width: 700px;
+            height: 700px;
+            border-radius: 50%;
+            filter: blur(130px);
+            opacity: 0.22;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .bg-glow.one {
+            top: -220px;
+            right: -120px;
+            background: var(--neon-cyan);
+            animation: floatGlow 8s ease-in-out infinite alternate;
+        }
+
+        .bg-glow.two {
+            bottom: -180px;
+            left: -120px;
+            background: var(--neon-purple);
+            animation: floatGlow 10s ease-in-out infinite alternate-reverse;
+        }
+
+        @keyframes floatGlow {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(50px, 40px) scale(1.15); }
+        }
+
+        .scanlines {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(
+                to bottom,
+                transparent 50%,
+                rgba(0, 240, 255, 0.015) 50%
+            );
+            background-size: 100% 4px;
+            z-index: 1;
+            pointer-events: none;
+            animation: scan 8s linear infinite;
+        }
+
+        @keyframes scan {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 100%; }
+        }
+
+        /* ===== PAGE ===== */
+        .score-page {
+            position: relative;
+            z-index: 2;
+            max-width: 1480px;
+            margin: 0 auto;
+            padding: 36px 40px 70px;
+            width: 100%;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 36px;
+            padding: 26px 36px;
+            background: var(--glass);
+            border: 1px solid rgba(0, 240, 255, 0.25);
+            border-radius: 20px;
+            backdrop-filter: blur(16px);
+            box-shadow:
+                0 0 35px rgba(0, 240, 255, 0.08),
+                inset 0 1px 0 rgba(255,255,255,0.06);
+            position: relative;
+            overflow: hidden;
+            animation: slideDown 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 60%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0,240,255,0.08), transparent);
+            animation: shine 4s infinite;
+        }
+
+        @keyframes shine {
+            0% { left: -100%; }
+            40% { left: 120%; }
+            100% { left: 120%; }
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+        }
+
+        .shield-logo {
+            width: 72px;
+            height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 18px;
+            background: linear-gradient(135deg, #00c6ff, #0072ff);
+            font-size: 32px;
+            box-shadow: 0 0 30px rgba(0, 200, 255, 0.5);
+            position: relative;
+            animation: iconPulse 3s ease-in-out infinite;
+        }
+
+        .shield-logo::after {
+            content: '';
+            position: absolute;
+            inset: -5px;
+            border-radius: 22px;
+            border: 2px solid rgba(0, 240, 255, 0.4);
+            animation: borderSpin 6s linear infinite;
+        }
+
+        @keyframes iconPulse {
+            0%, 100% { box-shadow: 0 0 22px rgba(0,200,255,0.4); }
+            50% { box-shadow: 0 0 40px rgba(0,240,255,0.7); }
+        }
+
+        @keyframes borderSpin {
+            0% { transform: rotate(0deg); opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { transform: rotate(360deg); opacity: 0.6; }
+        }
+
+        .header h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            background: linear-gradient(90deg, #00f0ff, #b026ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            margin-top: 6px;
+            color: #6a8eaa;
+            font-size: 16px;
+            letter-spacing: 0.6px;
+        }
+
+        .scan-indicator {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 26px;
+            border-radius: 50px;
+            background: rgba(0, 255, 157, 0.08);
+            border: 1px solid rgba(0, 255, 157, 0.35);
+            color: var(--neon-green);
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            box-shadow: 0 0 20px rgba(0, 255, 157, 0.15);
+        }
+
+        .live-dot {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            background: var(--neon-green);
+            box-shadow: 0 0 14px var(--neon-green);
+            animation: pulseDot 1.6s ease-in-out infinite;
+        }
+
+        @keyframes pulseDot {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(0.7); opacity: 0.5; }
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 28px;
+            margin-bottom: 32px;
+        }
+
+        /* ===== SCORE PANEL ===== */
+        .score-panel {
+            min-height: 500px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            border-radius: 24px;
+            background: var(--card-bg);
+            border: 1px solid rgba(0, 240, 255, 0.22);
+            backdrop-filter: blur(14px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            animation: cardIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+        }
+
+        /* Outer spinning dashed rings */
+        .score-panel::before {
+            content: '';
+            position: absolute;
+            width: 480px;
+            height: 480px;
+            border-radius: 50%;
+            border: 2px dashed rgba(0, 240, 255, 0.25);
+            animation: rotateRing 14s linear infinite;
+        }
+
+        .score-panel::after {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            border: 1px solid rgba(176, 38, 255, 0.2);
+            animation: rotateRing 20s linear infinite reverse;
+        }
+
+        @keyframes rotateRing {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes cardIn {
+            from { opacity: 0; transform: translateY(30px) scale(0.96); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* ===== SPINNING SCORE RING ===== */
+        .score-ring-wrapper {
+            position: relative;
+            width: 320px;
+            height: 320px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+        }
+
+        /* Spinning colorful border */
+        .spinning-border {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: conic-gradient(
+                from 0deg,
+                var(--neon-cyan),
+                var(--neon-purple),
+                var(--neon-pink),
+                var(--neon-green),
+                var(--neon-cyan)
+            );
+            animation: spinBorder 4s linear infinite;
+            padding: 6px;
+            box-shadow:
+                0 0 40px rgba(0, 240, 255, 0.3),
+                0 0 80px rgba(176, 38, 255, 0.15);
+        }
+
+        .spinning-border::before {
+            content: '';
+            position: absolute;
+            inset: 6px;
+            border-radius: 50%;
+            background: #040a12;
+        }
+
+        @keyframes spinBorder {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Inner score fill ring */
+        .score-ring {
+            position: relative;
+            width: 280px;
+            height: 280px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: conic-gradient(
+                var(--neon-cyan) calc(var(--score) * 1%),
+                rgba(255,255,255,0.04) 0
+            );
+            box-shadow: 0 0 50px rgba(0, 240, 255, 0.2);
+            animation: scoreAppear 1.3s cubic-bezier(0.22, 1, 0.36, 1);
+            z-index: 3;
+        }
+
+        @keyframes scoreAppear {
+            from { transform: scale(0.7); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .score-ring::before {
+            content: '';
+            position: absolute;
+            width: 230px;
+            height: 230px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #081525 40%, #040a12);
+            box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.7);
+        }
+
+        /* Extra spinning particles ring */
+        .particles-ring {
+            position: absolute;
+            width: 340px;
+            height: 340px;
+            border-radius: 50%;
+            border: 1px solid transparent;
+            background: conic-gradient(
+                from 180deg,
+                transparent 0%,
+                rgba(0, 240, 255, 0.4) 10%,
+                transparent 20%,
+                rgba(176, 38, 255, 0.4) 40%,
+                transparent 50%,
+                rgba(255, 42, 109, 0.4) 70%,
+                transparent 80%,
+                rgba(0, 255, 157, 0.4) 95%,
+                transparent 100%
+            );
+            mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #fff calc(100% - 2px));
+            -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #fff calc(100% - 2px));
+            animation: spinParticles 6s linear infinite reverse;
+            z-index: 1;
+        }
+
+        @keyframes spinParticles {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .score-content {
+            position: relative;
+            text-align: center;
+            z-index: 4;
+        }
+
+        .score-number {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 78px;
+            font-weight: 800;
+            line-height: 1;
+            background: linear-gradient(135deg, #ffffff, var(--neon-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: numberGlow 2.2s ease-in-out infinite;
+        }
+
+        @keyframes numberGlow {
+            0%, 100% { filter: drop-shadow(0 0 6px rgba(0,240,255,0.3)); }
+            50% { filter: drop-shadow(0 0 22px rgba(0,240,255,0.7)); }
+        }
+
+        .score-max {
+            margin-top: 8px;
+            color: #5a7a96;
+            font-size: 14px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .risk {
+            margin-top: 36px;
+            padding: 12px 28px;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            z-index: 2;
+            animation: riskPulse 2.2s ease-in-out infinite;
+        }
+
+        .risk.low {
+            background: rgba(0, 255, 157, 0.1);
+            border: 1px solid rgba(0, 255, 157, 0.35);
+            color: var(--neon-green);
+            box-shadow: 0 0 20px rgba(0, 255, 157, 0.15);
+        }
+
+        .risk.medium {
+            background: rgba(255, 204, 0, 0.1);
+            border: 1px solid rgba(255, 204, 0, 0.35);
+            color: #ffcc00;
+            box-shadow: 0 0 20px rgba(255, 204, 0, 0.15);
+        }
+
+        .risk.high {
+            background: rgba(255, 42, 109, 0.12);
+            border: 1px solid rgba(255, 42, 109, 0.4);
+            color: var(--neon-pink);
+            box-shadow: 0 0 20px rgba(255, 42, 109, 0.2);
+        }
+
+        @keyframes riskPulse {
+            0%, 100% { box-shadow: 0 0 12px rgba(0,240,255,0.1); }
+            50% { box-shadow: 0 0 28px rgba(0,240,255,0.25); }
+        }
+
+        /* ===== ANALYSIS PANEL ===== */
+        .analysis-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .analysis-card {
+            flex: 1;
+            padding: 26px 28px;
+            border-radius: 18px;
+            background: var(--card-bg);
+            border: 1px solid rgba(0, 240, 255, 0.15);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+            animation: cardIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .analysis-card:nth-child(1) { animation-delay: 0.15s; }
+        .analysis-card:nth-child(2) { animation-delay: 0.25s; }
+        .analysis-card:nth-child(3) { animation-delay: 0.35s; }
+
+        .analysis-card:hover {
+            transform: translateX(8px);
+            border-color: rgba(0, 240, 255, 0.4);
+            box-shadow: 0 16px 40px rgba(0, 240, 255, 0.12);
+        }
+
+        .analysis-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--neon-cyan), var(--neon-purple));
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .analysis-card:hover::before {
+            opacity: 1;
+        }
+
+        .analysis-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .analysis-title {
+            color: #5a7a96;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1.4px;
+            font-weight: 600;
+        }
+
+        .analysis-icon {
+            font-size: 26px;
+        }
+
+        .analysis-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: #f0f8ff;
+            letter-spacing: 0.5px;
+        }
+
+        .analysis-description {
+            margin-top: 8px;
+            color: #5a7a96;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .level-bar {
+            margin-top: 16px;
+            width: 100%;
+            height: 8px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.06);
+            overflow: hidden;
+        }
+
+        .level-progress {
+            height: 100%;
+            width: {{ score }}%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, #00aaff, var(--neon-cyan), var(--neon-green));
+            box-shadow: 0 0 16px rgba(0, 240, 255, 0.5);
+            animation: progressLoad 1.6s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        @keyframes progressLoad {
+            from { width: 0; }
+            to { width: {{ score }}%; }
+        }
+
+        /* ===== METRICS ===== */
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 22px;
+            margin-bottom: 32px;
+        }
+
+        .metric {
+            position: relative;
+            padding: 28px 26px;
+            min-height: 160px;
+            border-radius: 18px;
+            background: var(--card-bg);
+            border: 1px solid rgba(0, 240, 255, 0.14);
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+            animation: cardIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+        }
+
+        .metric:nth-child(1) { animation-delay: 0.2s; }
+        .metric:nth-child(2) { animation-delay: 0.3s; }
+        .metric:nth-child(3) { animation-delay: 0.4s; }
+
+        .metric::after {
+            content: '';
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            right: -35px;
+            bottom: -35px;
+            border-radius: 50%;
+            background: rgba(0, 240, 255, 0.06);
+            filter: blur(8px);
+        }
+
+        .metric:hover {
+            transform: translateY(-8px);
+            border-color: rgba(0, 240, 255, 0.4);
+            box-shadow: 0 16px 40px rgba(0, 240, 255, 0.12);
+        }
+
+        .metric-icon {
+            font-size: 28px;
+            margin-bottom: 18px;
+        }
+
+        .metric-label {
+            color: #5a7a96;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1.4px;
+            font-weight: 600;
+        }
+
+        .metric-value {
+            margin-top: 10px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .safe    { color: var(--neon-green); text-shadow: 0 0 18px rgba(0,255,157,0.35); }
+        .danger  { color: var(--neon-pink); text-shadow: 0 0 18px rgba(255,42,109,0.35); }
+        .unknown { color: #ffcc00; text-shadow: 0 0 18px rgba(255,204,0,0.3); }
+
+        /* ===== SECURITY LEVELS ===== */
+        .levels {
+            padding: 30px 32px;
+            border-radius: 20px;
+            background: var(--card-bg);
+            border: 1px solid rgba(0, 240, 255, 0.15);
+            margin-bottom: 32px;
+            backdrop-filter: blur(12px);
+            animation: cardIn 0.7s 0.45s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+        }
+
+        .levels h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 16px;
+            letter-spacing: 1.5px;
+            color: var(--neon-cyan);
+            margin-bottom: 24px;
+        }
+
+        .level-row {
+            display: grid;
+            grid-template-columns: 110px 1fr 80px;
+            align-items: center;
+            gap: 18px;
+            margin: 18px 0;
+        }
+
+        .level-name {
+            color: #7a9ab5;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .level-track {
+            height: 10px;
+            background: rgba(255,255,255,0.06);
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .level-fill {
+            height: 100%;
+            border-radius: inherit;
+            transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .level-fill.low {
+            width: 100%;
+            background: linear-gradient(90deg, #00c853, var(--neon-green));
+            box-shadow: 0 0 14px rgba(0,255,157,0.4);
+        }
+
+        .level-fill.medium {
+            width: 65%;
+            background: linear-gradient(90deg, #ffab00, #ffcc00);
+            box-shadow: 0 0 14px rgba(255,204,0,0.35);
+        }
+
+        .level-fill.high {
+            width: 35%;
+            background: linear-gradient(90deg, #d50000, var(--neon-pink));
+            box-shadow: 0 0 14px rgba(255,42,109,0.4);
+        }
+
+        .level-score {
+            text-align: right;
+            color: #5a7a96;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 28px;
+            border-radius: 16px;
+            background: var(--glass);
+            border: 1px solid rgba(0, 240, 255, 0.15);
+            backdrop-filter: blur(12px);
+            animation: cardIn 0.7s 0.55s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+        }
+
+        .footer-text {
+            color: #4a6a85;
+            font-size: 15px;
+            letter-spacing: 0.6px;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 28px;
+            border-radius: 12px;
+            text-decoration: none;
+            color: white;
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            background: linear-gradient(135deg, #00c6ff, #0072ff);
+            box-shadow: 0 0 24px rgba(0, 150, 255, 0.35);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .back-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -80%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+            transition: 0.5s;
+        }
+
+        .back-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 35px rgba(0, 200, 255, 0.55);
+        }
+
+        .back-button:hover::before {
+            left: 120%;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1200px) {
+            .score-page {
+                max-width: 100%;
+                padding: 28px 24px 60px;
+            }
+        }
+
+        @media (max-width: 1000px) {
+            .hero {
+                grid-template-columns: 1fr;
+            }
+            .metrics {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 700px) {
+            .score-page { padding: 18px 14px 50px; }
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 18px;
+                padding: 20px 22px;
+            }
+            .header h1 { font-size: 24px; }
+            .shield-logo { width: 58px; height: 58px; font-size: 26px; }
+            .metrics { grid-template-columns: 1fr; }
+            .level-row {
+                grid-template-columns: 80px 1fr 60px;
+            }
+            .footer {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+            .score-number { font-size: 60px; }
+            .score-ring-wrapper { width: 260px; height: 260px; }
+            .score-ring { width: 230px; height: 230px; }
+            .score-ring::before { width: 185px; height: 185px; }
+            .particles-ring { width: 280px; height: 280px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Effects -->
+    <div class="bg-grid"></div>
+    <div class="bg-glow one"></div>
+    <div class="bg-glow two"></div>
+    <div class="scanlines"></div>
+
+    <div class="score-page">
+
+        <!-- HEADER -->
+        <div class="header">
+            <div class="header-left">
+                <div class="shield-logo">🛡️</div>
+                <div>
+                    <h1>SECURITY SCORE</h1>
+                    <p>CyberShield Mini Pro • Elite Threat Assessment</p>
+                </div>
+            </div>
+            <div class="scan-indicator">
+                <span class="live-dot"></span>
+                Assessment Complete
+            </div>
+        </div>
+
+        <!-- HERO -->
+        <div class="hero">
+            <!-- SCORE CIRCLE -->
+            <div class="score-panel">
+                <div class="score-ring-wrapper">
+                    <!-- Outer spinning particles -->
+                    <div class="particles-ring"></div>
+
+                    <!-- Spinning multi-color border -->
+                    <div class="spinning-border"></div>
+
+                    <!-- Score fill ring -->
+                    <div class="score-ring" style="--score: {{ score }};">
+                        <div class="score-content">
+                            <div class="score-number">{{ score }}</div>
+                            <div class="score-max">Security Score / 100</div>
+                        </div>
+                    </div>
+                </div>
+
+                {% set risk_lower = risk|lower %}
+                <div class="risk {% if 'low' in risk_lower %}low{% elif 'medium' in risk_lower or 'med' in risk_lower %}medium{% else %}high{% endif %}">
+                    ● RISK LEVEL: {{ risk }}
+                </div>
+            </div>
+
+            <!-- ANALYSIS CARDS -->
+            <div class="analysis-panel">
+                <div class="analysis-card">
+                    <div class="analysis-top">
+                        <div class="analysis-title">Protection Level</div>
+                        <div class="analysis-icon">🛡️</div>
+                    </div>
+                    <div class="analysis-value">{{ risk }}</div>
+                    <div class="analysis-description">
+                        Overall security posture based on the current assessment.
+                    </div>
+                    <div class="level-bar">
+                        <div class="level-progress"></div>
+                    </div>
+                </div>
+
+                <div class="analysis-card">
+                    <div class="analysis-top">
+                        <div class="analysis-title">Network Exposure</div>
+                        <div class="analysis-icon">🔌</div>
+                    </div>
+                    <div class="analysis-value">
+                        {{ open_ports }}
+                        <span style="font-size:14px;color:#5a7a96;font-family:'Rajdhani',sans-serif;">
+                            open ports
+                        </span>
+                    </div>
+                    <div class="analysis-description">
+                        Selected local TCP ports detected during the scan.
+                    </div>
+                </div>
+
+                <div class="analysis-card">
+                    <div class="analysis-top">
+                        <div class="analysis-title">Firewall Protection</div>
+                        <div class="analysis-icon">🔥</div>
+                    </div>
+                    <div class="analysis-value">{{ firewall_status }}</div>
+                    <div class="analysis-description">
+                        Windows Firewall status detected by CyberShield Mini.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- METRICS -->
+        <div class="metrics">
+            <div class="metric">
+                <div class="metric-icon">🎯</div>
+                <div class="metric-label">Security Score</div>
+                <div class="metric-value safe">{{ score }}/100</div>
+            </div>
+            <div class="metric">
+                <div class="metric-icon">🔌</div>
+                <div class="metric-label">Open Ports</div>
+                <div class="metric-value {% if open_ports|int > 0 %}danger{% else %}safe{% endif %}">
+                    {{ open_ports }}
+                </div>
+            </div>
+            <div class="metric">
+                <div class="metric-icon">🧱</div>
+                <div class="metric-label">Firewall</div>
+                <div class="metric-value safe">{{ firewall_status }}</div>
+            </div>
+        </div>
+
+        <!-- RISK MATRIX -->
+        <div class="levels">
+            <h2>SECURITY RISK MATRIX</h2>
+            <div class="level-row">
+                <div class="level-name">LOW</div>
+                <div class="level-track">
+                    <div class="level-fill low"></div>
+                </div>
+                <div class="level-score">80–100</div>
+            </div>
+            <div class="level-row">
+                <div class="level-name">MEDIUM</div>
+                <div class="level-track">
+                    <div class="level-fill medium"></div>
+                </div>
+                <div class="level-score">50–79</div>
+            </div>
+            <div class="level-row">
+                <div class="level-name">HIGH</div>
+                <div class="level-track">
+                    <div class="level-fill high"></div>
+                </div>
+                <div class="level-score">0–49</div>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="footer">
+            <div class="footer-text">
+                🛡️ CYBERSHIELD MINI PRO &nbsp;|&nbsp; ELITE SECURITY MODULE
+            </div>
+            <a href="/" class="back-button">← DASHBOARD</a>
+        </div>
+
+    </div>
+</body>
+</html>

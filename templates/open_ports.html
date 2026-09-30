@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Open Port Check | CyberShield Mini Pro</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --neon-cyan: #00f0ff;
+            --neon-purple: #b026ff;
+            --neon-pink: #ff2a6d;
+            --neon-green: #00ff9d;
+            --neon-blue: #3a7bd5;
+            --bg-dark: #02040a;
+            --card-bg: rgba(8, 14, 28, 0.75);
+            --glass: rgba(12, 20, 40, 0.55);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Rajdhani', system-ui, sans-serif;
+            background: var(--bg-dark);
+            color: #e0f7ff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* ===== ANIMATED BACKGROUND ===== */
+        .bg-grid {
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+            background-size: 55px 55px;
+            z-index: 0;
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { background-position: 0 0; }
+            100% { background-position: 55px 55px; }
+        }
+
+        .bg-glow {
+            position: fixed;
+            width: 700px;
+            height: 700px;
+            border-radius: 50%;
+            filter: blur(130px);
+            opacity: 0.22;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .bg-glow.one {
+            top: -220px;
+            right: -120px;
+            background: var(--neon-cyan);
+            animation: floatGlow 8s ease-in-out infinite alternate;
+        }
+
+        .bg-glow.two {
+            bottom: -180px;
+            left: -120px;
+            background: var(--neon-purple);
+            animation: floatGlow 10s ease-in-out infinite alternate-reverse;
+        }
+
+        @keyframes floatGlow {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(50px, 40px) scale(1.15); }
+        }
+
+        .scanlines {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(
+                to bottom,
+                transparent 50%,
+                rgba(0, 240, 255, 0.015) 50%
+            );
+            background-size: 100% 4px;
+            z-index: 1;
+            pointer-events: none;
+            animation: scan 8s linear infinite;
+        }
+
+        @keyframes scan {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 100%; }
+        }
+
+        /* ===== PAGE - FULLER WIDTH ===== */
+        .ports-page {
+            position: relative;
+            z-index: 2;
+            max-width: 1480px;          /* was 1180 → much wider */
+            margin: 0 auto;
+            padding: 36px 40px 70px;    /* bigger padding */
+            width: 100%;
+        }
+
+        /* ===== HEADER ===== */
+        .top-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 36px;
+            padding: 26px 36px;         /* larger */
+            background: var(--glass);
+            border: 1px solid rgba(0, 240, 255, 0.25);
+            border-radius: 20px;
+            backdrop-filter: blur(16px);
+            box-shadow:
+                0 0 35px rgba(0, 240, 255, 0.08),
+                inset 0 1px 0 rgba(255,255,255,0.06);
+            position: relative;
+            overflow: hidden;
+            animation: slideDown 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .top-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 60%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0,240,255,0.08), transparent);
+            animation: shine 4s infinite;
+        }
+
+        @keyframes shine {
+            0% { left: -100%; }
+            40% { left: 120%; }
+            100% { left: 120%; }
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .title-section {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+        }
+
+        .title-icon {
+            width: 72px;                /* bigger */
+            height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 18px;
+            background: linear-gradient(135deg, #00c6ff, #0072ff);
+            font-size: 32px;
+            box-shadow: 0 0 30px rgba(0, 200, 255, 0.5);
+            position: relative;
+            animation: iconPulse 3s ease-in-out infinite;
+        }
+
+        .title-icon::after {
+            content: '';
+            position: absolute;
+            inset: -5px;
+            border-radius: 22px;
+            border: 2px solid rgba(0, 240, 255, 0.4);
+            animation: borderSpin 6s linear infinite;
+        }
+
+        @keyframes iconPulse {
+            0%, 100% { box-shadow: 0 0 22px rgba(0,200,255,0.4); }
+            50% { box-shadow: 0 0 40px rgba(0,240,255,0.7); }
+        }
+
+        @keyframes borderSpin {
+            0% { transform: rotate(0deg); opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { transform: rotate(360deg); opacity: 0.6; }
+        }
+
+        .title-section h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 32px;            /* bigger */
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            background: linear-gradient(90deg, #00f0ff, #b026ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .title-section p {
+            margin-top: 6px;
+            color: #6a8eaa;
+            font-size: 16px;            /* bigger */
+            letter-spacing: 0.6px;
+        }
+
+        .scan-status {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 26px;         /* larger */
+            border-radius: 50px;
+            background: rgba(0, 255, 157, 0.08);
+            border: 1px solid rgba(0, 255, 157, 0.35);
+            color: var(--neon-green);
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            box-shadow: 0 0 20px rgba(0, 255, 157, 0.15);
+        }
+
+        .status-dot {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            background: var(--neon-green);
+            box-shadow: 0 0 14px var(--neon-green);
+            animation: pulseDot 1.6s ease-in-out infinite;
+        }
+
+        @keyframes pulseDot {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(0.7); opacity: 0.5; }
+        }
+
+        /* ===== SUMMARY CARDS - BIGGER ===== */
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 22px;
+            margin-bottom: 32px;
+        }
+
+        .summary-card {
+            padding: 28px 24px;         /* larger */
+            border-radius: 18px;
+            background: var(--card-bg);
+            border: 1px solid rgba(0, 240, 255, 0.15);
+            backdrop-filter: blur(12px);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+            animation: cardIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+            min-height: 140px;
+        }
+
+        .summary-card:nth-child(1) { animation-delay: 0.1s; }
+        .summary-card:nth-child(2) { animation-delay: 0.2s; }
+        .summary-card:nth-child(3) { animation-delay: 0.3s; }
+        .summary-card:nth-child(4) { animation-delay: 0.4s; }
+
+        @keyframes cardIn {
+            from { opacity: 0; transform: translateY(25px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .summary-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: rgba(0, 240, 255, 0.45);
+            box-shadow: 0 16px 36px rgba(0, 240, 255, 0.14);
+        }
+
+        .summary-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
+        }
+
+        .summary-label {
+            color: #5a7a96;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1.6px;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .summary-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 42px;            /* much bigger */
+            font-weight: 700;
+            letter-spacing: 1px;
+            line-height: 1.1;
+        }
+
+        .summary-value.safe    { color: var(--neon-green); text-shadow: 0 0 22px rgba(0,255,157,0.4); }
+        .summary-value.warning { color: #ffcc00; text-shadow: 0 0 22px rgba(255,204,0,0.4); }
+        .summary-value.danger  { color: var(--neon-pink); text-shadow: 0 0 22px rgba(255,42,109,0.4); }
+        .summary-value.neutral { color: var(--neon-cyan); text-shadow: 0 0 22px rgba(0,240,255,0.4); }
+
+        .summary-sub {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #4a6a85;
+            letter-spacing: 0.4px;
+        }
+
+        /* ===== RISK BANNER ===== */
+        .risk-banner {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+            padding: 24px 32px;         /* larger */
+            margin-bottom: 32px;
+            border-radius: 18px;
+            background: var(--glass);
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            backdrop-filter: blur(12px);
+            position: relative;
+            overflow: hidden;
+            animation: cardIn 0.7s 0.35s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+        }
+
+        .risk-banner.high {
+            border-color: rgba(255, 42, 109, 0.4);
+            box-shadow: 0 0 30px rgba(255, 42, 109, 0.12);
+        }
+        .risk-banner.medium {
+            border-color: rgba(255, 204, 0, 0.35);
+            box-shadow: 0 0 30px rgba(255, 204, 0, 0.1);
+        }
+        .risk-banner.low {
+            border-color: rgba(0, 255, 157, 0.35);
+            box-shadow: 0 0 30px rgba(0, 255, 157, 0.1);
+        }
+
+        .risk-icon {
+            font-size: 40px;
+            animation: bounce 2.5s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .risk-text strong {
+            display: block;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 18px;
+            letter-spacing: 1.2px;
+            margin-bottom: 6px;
+        }
+
+        .risk-text span {
+            font-size: 16px;
+            color: #8aabb8;
+        }
+
+        /* ===== PORT TABLE ===== */
+        .ports-container {
+            background: var(--card-bg);
+            border: 1px solid rgba(0, 240, 255, 0.18);
+            border-radius: 20px;
+            overflow: hidden;
+            backdrop-filter: blur(14px);
+            margin-bottom: 30px;
+            box-shadow: 0 18px 50px rgba(0, 0, 0, 0.4);
+            animation: cardIn 0.7s 0.45s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+        }
+
+        .ports-header {
+            padding: 22px 32px;
+            border-bottom: 1px solid rgba(0, 240, 255, 0.12);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(90deg, rgba(0, 40, 80, 0.4), transparent);
+        }
+
+        .ports-header h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 17px;
+            letter-spacing: 1.8px;
+            color: var(--neon-cyan);
+        }
+
+        .ports-header span {
+            color: #5a7a96;
+            font-size: 15px;
+            letter-spacing: 0.6px;
+        }
+
+        .port-row {
+            display: grid;
+            grid-template-columns: 1.5fr 1.3fr 1fr 1fr;
+            align-items: center;
+            padding: 22px 32px;         /* larger rows */
+            border-bottom: 1px solid rgba(0, 240, 255, 0.06);
+            transition: all 0.25s ease;
+            position: relative;
+        }
+
+        .port-row:last-child { border-bottom: none; }
+
+        .port-row:hover {
+            background: rgba(0, 240, 255, 0.05);
+        }
+
+        .port-row:hover::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--neon-cyan);
+            box-shadow: 0 0 14px var(--neon-cyan);
+        }
+
+        .port-number {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            font-size: 19px;
+            font-weight: 600;
+            letter-spacing: 0.6px;
+        }
+
+        .port-icon {
+            width: 52px;                /* bigger */
+            height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 14px;
+            background: rgba(0, 240, 255, 0.08);
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            font-size: 22px;
+            transition: all 0.3s ease;
+        }
+
+        .port-row:hover .port-icon {
+            background: rgba(0, 240, 255, 0.15);
+            box-shadow: 0 0 18px rgba(0, 240, 255, 0.3);
+            transform: scale(1.08);
+        }
+
+        .port-name {
+            color: #7a9ab5;
+            font-size: 17px;
+            letter-spacing: 0.4px;
+        }
+
+        .port-risk {
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .port-risk.high   { color: var(--neon-pink); text-shadow: 0 0 12px rgba(255,42,109,0.4); }
+        .port-risk.medium { color: #ffcc00; text-shadow: 0 0 12px rgba(255,204,0,0.3); }
+        .port-risk.low    { color: var(--neon-green); }
+        .port-risk.none   { color: #3a556e; }
+
+        /* ===== BADGES ===== */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 18px;
+            border-radius: 40px;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 1.1px;
+            text-transform: uppercase;
+            transition: all 0.25s ease;
+        }
+
+        .badge.closed {
+            background: rgba(0, 255, 157, 0.1);
+            border: 1px solid rgba(0, 255, 157, 0.3);
+            color: var(--neon-green);
+            box-shadow: 0 0 14px rgba(0, 255, 157, 0.1);
+        }
+
+        .badge.open {
+            background: rgba(255, 42, 109, 0.12);
+            border: 1px solid rgba(255, 42, 109, 0.4);
+            color: var(--neon-pink);
+            box-shadow: 0 0 16px rgba(255, 42, 109, 0.15);
+            animation: openGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes openGlow {
+            0%, 100% { box-shadow: 0 0 12px rgba(255,42,109,0.2); }
+            50% { box-shadow: 0 0 24px rgba(255,42,109,0.4); }
+        }
+
+        .badge.error {
+            background: rgba(255, 204, 0, 0.1);
+            border: 1px solid rgba(255, 204, 0, 0.3);
+            color: #ffcc00;
+        }
+
+        .badge-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        /* ===== RECOMMENDATIONS ===== */
+        .recommendations {
+            margin-bottom: 30px;
+            padding: 28px 32px;
+            border-radius: 18px;
+            background: var(--card-bg);
+            border: 1px solid rgba(176, 38, 255, 0.25);
+            backdrop-filter: blur(12px);
+            animation: cardIn 0.7s 0.55s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+        }
+
+        .recommendations h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 16px;
+            letter-spacing: 1.4px;
+            color: var(--neon-purple);
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .rec-list {
+            display: grid;
+            gap: 12px;
+        }
+
+        .rec-item {
+            display: flex;
+            gap: 14px;
+            padding: 18px 20px;
+            border-radius: 14px;
+            background: rgba(176, 38, 255, 0.06);
+            border: 1px solid rgba(176, 38, 255, 0.15);
+            font-size: 15.5px;
+            color: #9ab8cc;
+            transition: all 0.25s ease;
+        }
+
+        .rec-item:hover {
+            background: rgba(176, 38, 255, 0.1);
+            border-color: rgba(176, 38, 255, 0.3);
+            transform: translateX(6px);
+        }
+
+        .rec-item strong {
+            color: #e0d0ff;
+        }
+
+        /* ===== INFO BOX ===== */
+        .info-box {
+            margin-bottom: 30px;
+            padding: 22px 28px;
+            border-radius: 16px;
+            background: rgba(0, 80, 160, 0.08);
+            border: 1px solid rgba(0, 180, 255, 0.15);
+            color: #7a9ab5;
+            font-size: 15.5px;
+            line-height: 1.7;
+            animation: cardIn 0.7s 0.6s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+        }
+
+        .info-box strong {
+            color: var(--neon-cyan);
+        }
+
+        /* ===== BOTTOM BAR ===== */
+        .bottom-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 28px;
+            border-radius: 16px;
+            background: var(--glass);
+            border: 1px solid rgba(0, 240, 255, 0.15);
+            backdrop-filter: blur(12px);
+            animation: cardIn 0.7s 0.65s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+        }
+
+        .bottom-info {
+            color: #4a6a85;
+            font-size: 15px;
+            letter-spacing: 0.6px;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 28px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #00c6ff, #0072ff);
+            color: white;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            box-shadow: 0 0 24px rgba(0, 150, 255, 0.35);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .back-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -80%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+            transition: 0.5s;
+        }
+
+        .back-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 35px rgba(0, 200, 255, 0.55);
+        }
+
+        .back-button:hover::before {
+            left: 120%;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1200px) {
+            .ports-page {
+                max-width: 100%;
+                padding: 28px 24px 60px;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .summary { grid-template-columns: repeat(2, 1fr); }
+            .port-row { grid-template-columns: 1.4fr 1fr 1fr; }
+            .port-risk { display: none; }
+            .title-section h1 { font-size: 26px; }
+            .summary-value { font-size: 34px; }
+        }
+
+        @media (max-width: 650px) {
+            .ports-page { padding: 18px 14px 50px; }
+            .top-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 18px;
+                padding: 20px 22px;
+            }
+            .summary { grid-template-columns: 1fr; }
+            .port-row {
+                grid-template-columns: 1fr;
+                gap: 12px;
+                padding: 18px 20px;
+            }
+            .bottom-bar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+            .title-section h1 { font-size: 22px; }
+            .title-icon { width: 58px; height: 58px; font-size: 26px; }
+            .summary-value { font-size: 36px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Effects -->
+    <div class="bg-grid"></div>
+    <div class="bg-glow one"></div>
+    <div class="bg-glow two"></div>
+    <div class="scanlines"></div>
+
+    <div class="ports-page">
+
+        <!-- HEADER -->
+        <div class="top-header">
+            <div class="title-section">
+                <div class="title-icon">🔍</div>
+                <div>
+                    <h1>OPEN PORT CHECK</h1>
+                    <p>CyberShield Mini Pro • Elite Network Assessment</p>
+                </div>
+            </div>
+            <div class="scan-status">
+                <span class="status-dot"></span>
+                Scan Complete
+            </div>
+        </div>
+
+        <!-- CALCULATIONS -->
+        {% set open_count = results | selectattr("status", "equalto", "OPEN") | list | length %}
+        {% set closed_count = results | selectattr("status", "equalto", "CLOSED") | list | length %}
+        {% set error_count = results | selectattr("status", "equalto", "ERROR") | list | length %}
+        {% set total = results|length %}
+
+        {% set risk_score = open_count * 25 %}
+        {% if risk_score > 100 %}{% set risk_score = 100 %}{% endif %}
+
+        {% if open_count == 0 %}
+            {% set risk_level = "low" %}
+            {% set risk_label = "SECURE" %}
+            {% set risk_message = "No open ports detected. System perimeter looks solid." %}
+            {% set risk_emoji = "✅" %}
+        {% elif open_count <= 2 %}
+            {% set risk_level = "medium" %}
+            {% set risk_label = "CAUTION" %}
+            {% set risk_message = open_count ~ " open port(s) found. Review and lock down unused services." %}
+            {% set risk_emoji = "⚠️" %}
+        {% else %}
+            {% set risk_level = "high" %}
+            {% set risk_label = "THREAT DETECTED" %}
+            {% set risk_message = open_count ~ " open ports exposed. Immediate action recommended." %}
+            {% set risk_emoji = "🚨" %}
+        {% endif %}
+
+        <!-- SUMMARY -->
+        <div class="summary">
+            <div class="summary-card">
+                <div class="summary-label">Ports Scanned</div>
+                <div class="summary-value neutral">{{ total }}</div>
+                <div class="summary-sub">Common services</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-label">Open Ports</div>
+                <div class="summary-value {% if open_count > 0 %}warning{% else %}safe{% endif %}">
+                    {{ open_count }}
+                </div>
+                <div class="summary-sub">Need attention</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-label">Closed Ports</div>
+                <div class="summary-value safe">{{ closed_count }}</div>
+                <div class="summary-sub">Locked down</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-label">Risk Score</div>
+                <div class="summary-value {% if risk_level == 'high' %}danger{% elif risk_level == 'medium' %}warning{% else %}safe{% endif %}">
+                    {{ risk_score }}
+                </div>
+                <div class="summary-sub">Threat index</div>
+            </div>
+        </div>
+
+        <!-- RISK BANNER -->
+        <div class="risk-banner {{ risk_level }}">
+            <div class="risk-icon">{{ risk_emoji }}</div>
+            <div class="risk-text">
+                <strong>{{ risk_label }}</strong>
+                <span>{{ risk_message }}</span>
+            </div>
+        </div>
+
+        <!-- PORT RESULTS -->
+        <div class="ports-container">
+            <div class="ports-header">
+                <h2>SCAN RESULTS</h2>
+                <span>TARGET // 127.0.0.1</span>
+            </div>
+
+            {% for item in results %}
+            <div class="port-row">
+                <div class="port-number">
+                    <div class="port-icon">
+                        {% if item.port == 21 %}📁
+                        {% elif item.port == 22 %}🔐
+                        {% elif item.port == 80 %}🌐
+                        {% elif item.port == 443 %}🔒
+                        {% elif item.port == 3306 %}🗄️
+                        {% elif item.port == 3389 %}🖥️
+                        {% elif item.port == 5432 %}🗄️
+                        {% elif item.port == 8080 %}🌐
+                        {% else %}🔌
+                        {% endif %}
+                    </div>
+                    PORT {{ item.port }}
+                </div>
+
+                <div class="port-name">
+                    {% if item.port == 21 %}FTP
+                    {% elif item.port == 22 %}SSH
+                    {% elif item.port == 80 %}HTTP
+                    {% elif item.port == 443 %}HTTPS
+                    {% elif item.port == 3306 %}MySQL
+                    {% elif item.port == 3389 %}RDP
+                    {% elif item.port == 5432 %}PostgreSQL
+                    {% elif item.port == 8080 %}HTTP-Alt
+                    {% elif item.port == 25 %}SMTP
+                    {% elif item.port == 53 %}DNS
+                    {% elif item.port == 110 %}POP3
+                    {% elif item.port == 143 %}IMAP
+                    {% elif item.port == 445 %}SMB
+                    {% else %}Unknown Service
+                    {% endif %}
+                </div>
+
+                <div class="port-risk
+                    {% if item.status == 'OPEN' %}
+                        {% if item.port in [21, 23, 3389, 445] %}high
+                        {% elif item.port in [22, 3306, 5432] %}medium
+                        {% else %}medium
+                        {% endif %}
+                    {% else %}
+                        none
+                    {% endif %}
+                ">
+                    {% if item.status == "OPEN" %}
+                        {% if item.port in [21, 23, 3389, 445] %}HIGH RISK
+                        {% elif item.port in [22, 3306, 5432] %}MEDIUM
+                        {% else %}REVIEW
+                        {% endif %}
+                    {% else %}
+                        —
+                    {% endif %}
+                </div>
+
+                <div>
+                    {% if item.status == "CLOSED" %}
+                    <span class="badge closed">
+                        <span class="badge-dot"></span>
+                        Closed
+                    </span>
+                    {% elif item.status == "OPEN" %}
+                    <span class="badge open">
+                        <span class="badge-dot"></span>
+                        Open
+                    </span>
+                    {% else %}
+                    <span class="badge error">
+                        <span class="badge-dot"></span>
+                        Error
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- RECOMMENDATIONS -->
+        {% if open_count > 0 %}
+        <div class="recommendations">
+            <h3>⚡ SECURITY PROTOCOLS</h3>
+            <div class="rec-list">
+                {% for item in results if item.status == "OPEN" %}
+                <div class="rec-item">
+                    <div>
+                        <strong>PORT {{ item.port }}
+                        {% if item.port == 21 %}(FTP)
+                        {% elif item.port == 22 %}(SSH)
+                        {% elif item.port == 80 %}(HTTP)
+                        {% elif item.port == 443 %}(HTTPS)
+                        {% elif item.port == 3306 %}(MySQL)
+                        {% elif item.port == 3389 %}(RDP)
+                        {% elif item.port == 5432 %}(PostgreSQL)
+                        {% endif %}
+                        </strong> is exposed.
+                        {% if item.port == 21 %}
+                            Disable FTP or switch to SFTP. Credentials travel in clear text.
+                        {% elif item.port == 22 %}
+                            Enforce key-based auth and disable password login.
+                        {% elif item.port in [80, 8080] %}
+                            Force HTTPS redirect. Prefer port 443 only.
+                        {% elif item.port == 3389 %}
+                            RDP is a high-value target. Restrict or use VPN.
+                        {% elif item.port in [3306, 5432] %}
+                            Database ports must not be public. Bind to localhost.
+                        {% else %}
+                            Verify this service is required. Close if unused.
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- INFO -->
+        <div class="info-box">
+            <strong>SYSTEM NOTE //</strong>
+            Assessment performed on local loopback (127.0.0.1). Closed ports indicate no service accepted the connection.
+            Open ports represent active listeners that should be reviewed against your security policy.
+        </div>
+
+        <!-- BOTTOM -->
+        <div class="bottom-bar">
+            <div class="bottom-info">
+                🛡️ CYBERSHIELD MINI PRO &nbsp;|&nbsp; ELITE SECURITY MODULE
+            </div>
+            <a href="/" class="back-button">← DASHBOARD</a>
+        </div>
+
+    </div>
+</body>
+</html>

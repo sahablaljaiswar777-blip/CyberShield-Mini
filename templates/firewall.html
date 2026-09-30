@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Firewall / NGFW | CyberShield Mini</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at 20% 20%, rgba(0, 140, 255, 0.18), transparent 30%),
+                radial-gradient(circle at 80% 70%, rgba(0, 255, 140, 0.10), transparent 30%),
+                #030811;
+            color: white;
+        }
+
+        .firewall-page {
+            max-width: 1100px;
+            margin: auto;
+            padding: 45px 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 42px;
+            margin-bottom: 10px;
+            background: linear-gradient(
+                90deg,
+                #00cfff,
+                #4169ff,
+                #00ff88
+            );
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            color: #8ca5b8;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        .panel {
+            background: rgba(7, 20, 35, 0.92);
+            border: 1px solid rgba(0, 190, 255, 0.25);
+            border-radius: 22px;
+            padding: 30px;
+            box-shadow: 0 0 35px rgba(0, 150, 255, 0.08);
+            transition: 0.35s;
+        }
+
+        .panel:hover {
+            transform: translateY(-5px);
+            border-color: rgba(0, 220, 255, 0.55);
+            box-shadow: 0 0 40px rgba(0, 190, 255, 0.15);
+        }
+
+        .panel h2 {
+            margin-bottom: 8px;
+        }
+
+        .description {
+            color: #829bad;
+            margin-bottom: 25px;
+        }
+
+        /* Protection circle */
+
+        .protection-area {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 15px 0 30px;
+        }
+
+        .protection-circle {
+            width: 230px;
+            height: 230px;
+            border-radius: 50%;
+            position: relative;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background:
+                conic-gradient(
+                    #00e676 0deg,
+                    #00d4ff 180deg,
+                    #00e676 360deg
+                );
+
+            box-shadow:
+                0 0 25px rgba(0, 230, 118, 0.55),
+                0 0 70px rgba(0, 180, 255, 0.18);
+
+            animation: pulse 2s infinite ease-in-out;
+        }
+
+        .protection-circle::before {
+            content: "";
+
+            position: absolute;
+
+            width: 175px;
+            height: 175px;
+
+            border-radius: 50%;
+
+            background:
+                radial-gradient(
+                    circle,
+                    #0c1c2d,
+                    #030911
+                );
+        }
+
+        .protection-circle::after {
+            content: "";
+
+            position: absolute;
+
+            width: 242px;
+            height: 242px;
+
+            border-radius: 50%;
+
+            border: 3px solid transparent;
+            border-top-color: #00ff88;
+            border-right-color: #00cfff;
+
+            animation: rotate 2.5s linear infinite;
+
+            filter:
+                drop-shadow(0 0 8px #00e676);
+        }
+
+        .circle-content {
+            position: relative;
+            z-index: 5;
+            text-align: center;
+        }
+
+        .shield {
+            font-size: 48px;
+            margin-bottom: 5px;
+        }
+
+        .active-text {
+            color: #00ff88;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.035);
+            }
+        }
+
+        /* Status cards */
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .status-card {
+            padding: 18px;
+            border-radius: 14px;
+            background: rgba(10, 28, 45, 0.85);
+            border: 1px solid #203c52;
+        }
+
+        .status-title {
+            color: #7992a5;
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+
+        .status-value {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .enabled {
+            color: #00e676;
+            text-shadow: 0 0 12px rgba(0, 230, 118, 0.5);
+        }
+
+        .disabled {
+            color: #ff1744;
+            text-shadow: 0 0 12px rgba(255, 23, 68, 0.5);
+        }
+
+        .unknown {
+            color: #ffb300;
+            text-shadow: 0 0 12px rgba(255, 179, 0, 0.5);
+        }
+
+        /* Information */
+
+        .info-box {
+            margin-top: 20px;
+            padding: 16px;
+            border-radius: 12px;
+            background: rgba(0, 150, 255, 0.05);
+            border-left: 3px solid #00cfff;
+            color: #91a8ba;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .scan-line {
+            margin-top: 25px;
+            height: 4px;
+            width: 100%;
+            background: #13283a;
+            overflow: hidden;
+            border-radius: 10px;
+        }
+
+        .scan-line::after {
+            content: "";
+            display: block;
+            height: 100%;
+            width: 35%;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    transparent,
+                    #00e676,
+                    #00cfff,
+                    transparent
+                );
+
+            animation: scan 2s linear infinite;
+        }
+
+        @keyframes scan {
+            from {
+                transform: translateX(-150%);
+            }
+
+            to {
+                transform: translateX(350%);
+            }
+        }
+
+        .back-button {
+            display: block;
+            width: fit-content;
+            margin: 30px auto 0;
+            padding: 12px 22px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: #9fdfff;
+            border: 1px solid #24516d;
+            transition: 0.3s;
+        }
+
+        .back-button:hover {
+            border-color: #00d9ff;
+            color: white;
+            box-shadow: 0 0 20px rgba(0, 200, 255, 0.2);
+        }
+
+        @media (max-width: 800px) {
+
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 30px;
+            }
+
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+<div class="firewall-page">
+
+    <div class="header">
+
+        <h1>🛡️ Firewall / NGFW Security Check</h1>
+
+        <p>
+            CyberShield Mini is checking your local firewall protection.
+        </p>
+
+    </div>
+
+
+    <div class="dashboard">
+
+
+        <!-- PROTECTION -->
+
+        <div class="panel">
+
+            <h2>🛡️ Protection Status</h2>
+
+            <p class="description">
+                Current Windows Firewall protection state.
+            </p>
+
+
+            <div class="protection-area">
+
+                <div class="protection-circle">
+
+                    <div class="circle-content">
+
+                        <div class="shield">
+                            🛡️
+                        </div>
+
+                        {% if firewall_status == "ENABLED" %}
+
+                            <div class="active-text">
+                                PROTECTED
+                            </div>
+
+                        {% elif firewall_status == "DISABLED" %}
+
+                            <div class="active-text"
+                                 style="color:#ff1744;">
+                                AT RISK
+                            </div>
+
+                        {% else %}
+
+                            <div class="active-text"
+                                 style="color:#ffb300;">
+                                UNKNOWN
+                            </div>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="scan-line"></div>
+
+        </div>
+
+
+        <!-- DETAILS -->
+
+        <div class="panel">
+
+            <h2>📊 Firewall Details</h2>
+
+            <p class="description">
+                Security information detected by CyberShield Mini.
+            </p>
+
+
+            <div class="status-grid">
+
+
+                <div class="status-card">
+
+                    <div class="status-title">
+                        FIREWALL
+                    </div>
+
+                    {% if firewall_status == "ENABLED" %}
+
+                        <div class="status-value enabled">
+                            {{ firewall_status }}
+                        </div>
+
+                    {% elif firewall_status == "DISABLED" %}
+
+                        <div class="status-value disabled">
+                            {{ firewall_status }}
+                        </div>
+
+                    {% else %}
+
+                        <div class="status-value unknown">
+                            {{ firewall_status }}
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                <div class="status-card">
+
+                    <div class="status-title">
+                        PROTECTION
+                    </div>
+
+                    {% if protection == "ACTIVE" %}
+
+                        <div class="status-value enabled">
+                            ACTIVE
+                        </div>
+
+                    {% elif protection == "INACTIVE" %}
+
+                        <div class="status-value disabled">
+                            INACTIVE
+                        </div>
+
+                    {% else %}
+
+                        <div class="status-value unknown">
+                            UNKNOWN
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+
+            </div>
+
+
+            <div class="info-box">
+
+                <strong>How it works:</strong><br>
+
+                CyberShield Mini checks the Windows
+                Firewall profiles on your local computer
+                and reports whether firewall protection
+                is enabled.
+
+            </div>
+
+
+            <div class="info-box">
+
+                💡 <strong>Recommendation:</strong><br>
+
+                Keep your firewall enabled to provide
+                an additional layer of protection against
+                unwanted network connections.
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <a
+        href="{{ url_for('home') }}"
+        class="back-button">
+
+        ← Back to Dashboard
+
+    </a>
+
+</div>
+
+</body>
+
+</html>

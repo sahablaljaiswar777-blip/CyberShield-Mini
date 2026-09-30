@@ -1,0 +1,1466 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CyberShield Mini | Security Report</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+
+        /* ==================================================
+           CYBERSHIELD PREMIUM REPORT
+           Instagram-inspired gradient + Cybersecurity UI
+           ================================================== */
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+
+            margin: 0;
+
+            min-height: 100vh;
+
+            font-family:
+                "Segoe UI",
+                Arial,
+                sans-serif;
+
+            color: #ffffff;
+
+            background:
+                radial-gradient(
+                    circle at 10% 10%,
+                    rgba(131, 58, 180, 0.25),
+                    transparent 28%
+                ),
+
+                radial-gradient(
+                    circle at 90% 15%,
+                    rgba(225, 48, 108, 0.22),
+                    transparent 28%
+                ),
+
+                radial-gradient(
+                    circle at 50% 100%,
+                    rgba(253, 29, 29, 0.15),
+                    transparent 35%
+                ),
+
+                linear-gradient(
+                    135deg,
+                    #050507,
+                    #0b0613,
+                    #080812,
+                    #050507
+                );
+
+            overflow-x: hidden;
+        }
+
+
+        /* ==================================================
+           AMBIENT BACKGROUND
+           ================================================== */
+
+        body::before {
+
+            content: "";
+
+            position: fixed;
+
+            width: 500px;
+            height: 500px;
+
+            left: -180px;
+            top: 25%;
+
+            border-radius: 50%;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #833ab4,
+                    #fd1d1d,
+                    #fcb045
+                );
+
+            filter: blur(150px);
+
+            opacity: 0.12;
+
+            pointer-events: none;
+
+            animation: ambientMove 10s infinite alternate ease-in-out;
+        }
+
+
+        @keyframes ambientMove {
+
+            from {
+                transform: translate(0, 0);
+            }
+
+            to {
+                transform: translate(280px, -80px);
+            }
+
+        }
+
+
+        /* ==================================================
+           MAIN CONTAINER
+           ================================================== */
+
+        .report-container {
+
+            width: 92%;
+
+            max-width: 1150px;
+
+            margin: 45px auto;
+
+            position: relative;
+
+            z-index: 2;
+        }
+
+
+        /* ==================================================
+           HEADER
+           ================================================== */
+
+        .report-header {
+
+            text-align: center;
+
+            margin-bottom: 40px;
+
+            animation: fadeDown 0.8s ease;
+        }
+
+
+        .logo {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            padding: 8px 16px;
+
+            border-radius: 30px;
+
+            background:
+                rgba(255, 255, 255, 0.06);
+
+            border:
+                1px solid rgba(255, 255, 255, 0.12);
+
+            backdrop-filter: blur(15px);
+
+            font-size: 13px;
+
+            letter-spacing: 1.5px;
+
+            text-transform: uppercase;
+
+            color: #d7c7ff;
+
+            margin-bottom: 18px;
+        }
+
+
+        .logo-dot {
+
+            width: 8px;
+
+            height: 8px;
+
+            border-radius: 50%;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #833ab4,
+                    #fd1d1d,
+                    #fcb045
+                );
+
+            box-shadow:
+                0 0 15px #fd1d1d;
+        }
+
+
+        .report-header h1 {
+
+            margin: 0;
+
+            font-size: clamp(35px, 6vw, 65px);
+
+            font-weight: 800;
+
+            letter-spacing: -2px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #833ab4,
+                    #e1306c,
+                    #fd1d1d,
+                    #fcb045
+                );
+
+            -webkit-background-clip: text;
+
+            background-clip: text;
+
+            color: transparent;
+
+            text-shadow:
+                0 0 35px rgba(225, 48, 108, 0.15);
+        }
+
+
+        .report-header p {
+
+            color: #a8a3b5;
+
+            margin: 12px 0 0;
+
+            font-size: 15px;
+        }
+
+
+        .scan-time {
+
+            margin-top: 8px !important;
+
+            font-size: 13px !important;
+
+            color: #706b7c !important;
+        }
+
+
+        /* ==================================================
+           PREMIUM CARD
+           ================================================== */
+
+        .report-card {
+
+            position: relative;
+
+            overflow: hidden;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(255, 255, 255, 0.075),
+                    rgba(255, 255, 255, 0.025)
+                );
+
+            border:
+                1px solid rgba(255, 255, 255, 0.10);
+
+            border-radius: 24px;
+
+            padding: 28px;
+
+            margin-bottom: 25px;
+
+            backdrop-filter: blur(20px);
+
+            -webkit-backdrop-filter: blur(20px);
+
+            box-shadow:
+                0 20px 60px rgba(0, 0, 0, 0.35);
+
+            transition:
+                transform 0.35s ease,
+                border-color 0.35s ease,
+                box-shadow 0.35s ease;
+
+            animation: fadeUp 0.8s ease;
+        }
+
+
+        .report-card::before {
+
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+            left: 0;
+
+            width: 100%;
+            height: 2px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    transparent,
+                    #833ab4,
+                    #e1306c,
+                    #fd1d1d,
+                    #fcb045,
+                    transparent
+                );
+
+            opacity: 0.8;
+        }
+
+
+        .report-card:hover {
+
+            transform: translateY(-4px);
+
+            border-color:
+                rgba(225, 48, 108, 0.30);
+
+            box-shadow:
+                0 25px 70px rgba(0, 0, 0, 0.5),
+                0 0 35px rgba(131, 58, 180, 0.08);
+        }
+
+
+        .report-card h2 {
+
+            margin-top: 0;
+
+            margin-bottom: 24px;
+
+            font-size: 20px;
+
+            color: #ffffff;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+        }
+
+
+        .report-card h2::after {
+
+            content: "";
+
+            height: 1px;
+
+            flex: 1;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    rgba(255,255,255,0.15),
+                    transparent
+                );
+        }
+
+
+        /* ==================================================
+           SCORE SECTION
+           ================================================== */
+
+        .score-section {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            flex-direction: column;
+
+            padding: 20px;
+        }
+
+
+        .score-circle {
+
+            width: 230px;
+
+            height: 230px;
+
+            border-radius: 50%;
+
+            background:
+                conic-gradient(
+                    from 0deg,
+                    #833ab4,
+                    #e1306c,
+                    #fd1d1d,
+                    #fcb045,
+                    #833ab4
+                );
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            position: relative;
+
+            animation:
+                scoreSpin 8s linear infinite;
+
+            box-shadow:
+                0 0 45px rgba(225, 48, 108, 0.20);
+        }
+
+
+        .score-circle::before {
+
+            content: "";
+
+            position: absolute;
+
+            width: 190px;
+
+            height: 190px;
+
+            border-radius: 50%;
+
+            background:
+                radial-gradient(
+                    circle,
+                    #15121d,
+                    #08070d
+                );
+
+            box-shadow:
+                inset 0 0 35px rgba(0,0,0,0.7);
+        }
+
+
+        .score-circle::after {
+
+            content: "";
+
+            position: absolute;
+
+            width: 13px;
+
+            height: 13px;
+
+            border-radius: 50%;
+
+            background: #ffffff;
+
+            box-shadow:
+                0 0 20px #ffffff,
+                0 0 40px #e1306c;
+
+            top: 0;
+
+            left: 50%;
+
+            transform: translateX(-50%);
+        }
+
+
+        .score-number {
+
+            position: relative;
+
+            z-index: 3;
+
+            text-align: center;
+
+            animation:
+                scoreCounter 8s linear infinite;
+        }
+
+
+        .score-number strong {
+
+            display: block;
+
+            font-size: 58px;
+
+            font-weight: 800;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #ffffff,
+                    #e1306c,
+                    #fcb045
+                );
+
+            -webkit-background-clip: text;
+
+            background-clip: text;
+
+            color: transparent;
+        }
+
+
+        .score-number span {
+
+            color: #888294;
+
+            font-size: 14px;
+        }
+
+
+        @keyframes scoreSpin {
+
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+
+        }
+
+
+        @keyframes scoreCounter {
+
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(-360deg);
+            }
+
+        }
+
+
+        /* ==================================================
+           RISK
+           ================================================== */
+
+        .risk {
+
+            margin-top: 25px;
+
+            padding: 11px 25px;
+
+            border-radius: 30px;
+
+            font-size: 13px;
+
+            font-weight: 700;
+
+            letter-spacing: 1.5px;
+
+            text-transform: uppercase;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    rgba(131,58,180,0.15),
+                    rgba(225,48,108,0.15)
+                );
+
+            border:
+                1px solid rgba(225,48,108,0.35);
+
+            color: #ff8bb0;
+
+            box-shadow:
+                0 0 25px rgba(225,48,108,0.10);
+        }
+
+
+        /* ==================================================
+           INFORMATION GRID
+           ================================================== */
+
+        .info-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    auto-fit,
+                    minmax(220px, 1fr)
+                );
+
+            gap: 15px;
+        }
+
+
+        .info-box {
+
+            position: relative;
+
+            padding: 20px;
+
+            border-radius: 17px;
+
+            background:
+                rgba(0, 0, 0, 0.20);
+
+            border:
+                1px solid rgba(255,255,255,0.07);
+
+            transition:
+                0.3s ease;
+        }
+
+
+        .info-box:hover {
+
+            transform: translateY(-3px);
+
+            border-color:
+                rgba(225,48,108,0.30);
+
+            background:
+                rgba(255,255,255,0.045);
+        }
+
+
+        .info-box .label {
+
+            color: #817b8e;
+
+            font-size: 11px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 1.2px;
+
+            margin-bottom: 9px;
+        }
+
+
+        .info-box .value {
+
+            color: #ffffff;
+
+            font-size: 16px;
+
+            font-weight: 600;
+
+            word-break: break-word;
+        }
+
+
+        /* ==================================================
+           PORTS
+           ================================================== */
+
+        .ports-list {
+
+            display: flex;
+
+            flex-wrap: wrap;
+
+            gap: 10px;
+        }
+
+
+        .port {
+
+            padding: 9px 16px;
+
+            border-radius: 30px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(225,48,108,0.15),
+                    rgba(131,58,180,0.15)
+                );
+
+            border:
+                1px solid rgba(225,48,108,0.35);
+
+            color: #ff8bad;
+
+            font-size: 13px;
+
+            font-weight: 600;
+        }
+
+
+        .no-ports {
+
+            padding: 15px;
+
+            border-radius: 13px;
+
+            background:
+                rgba(0, 230, 118, 0.06);
+
+            border:
+                1px solid rgba(0,230,118,0.18);
+
+            color: #5cffad;
+
+            font-weight: 600;
+        }
+
+
+        /* ==================================================
+           STATUS
+           ================================================== */
+
+        .status {
+
+            font-weight: 700;
+
+            letter-spacing: 0.5px;
+        }
+
+
+        .enabled {
+
+            color: #5cffad;
+        }
+
+
+        .disabled {
+
+            color: #ff5578;
+        }
+
+
+        .unknown {
+
+            color: #ffc05c;
+        }
+
+
+        /* ==================================================
+           RECOMMENDATIONS
+           ================================================== */
+
+        .recommendations {
+
+            list-style: none;
+
+            padding: 0;
+
+            margin: 0;
+        }
+
+
+        .recommendations li {
+
+            position: relative;
+
+            padding: 17px 18px 17px 48px;
+
+            margin-bottom: 12px;
+
+            border-radius: 14px;
+
+            background:
+                rgba(0,0,0,0.20);
+
+            border:
+                1px solid rgba(255,255,255,0.06);
+
+            color: #c5c0cc;
+
+            transition:
+                0.3s ease;
+        }
+
+
+        .recommendations li:hover {
+
+            background:
+                rgba(255,255,255,0.045);
+
+            transform: translateX(5px);
+        }
+
+
+        .recommendations li::before {
+
+            content: "✓";
+
+            position: absolute;
+
+            left: 17px;
+
+            top: 50%;
+
+            transform: translateY(-50%);
+
+            width: 23px;
+
+            height: 23px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            border-radius: 50%;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #833ab4,
+                    #e1306c
+                );
+
+            color: white;
+
+            font-size: 12px;
+
+            font-weight: bold;
+        }
+
+
+        /* ==================================================
+           BUTTONS
+           ================================================== */
+
+        .actions {
+
+            display: flex;
+
+            justify-content: center;
+
+            gap: 14px;
+
+            flex-wrap: wrap;
+
+            margin-top: 32px;
+        }
+
+
+        .btn {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 8px;
+
+            padding: 14px 24px;
+
+            border-radius: 13px;
+
+            text-decoration: none;
+
+            font-weight: 700;
+
+            font-size: 14px;
+
+            cursor: pointer;
+
+            border: none;
+
+            transition:
+                transform 0.3s ease,
+                box-shadow 0.3s ease;
+        }
+
+
+        .btn-primary {
+
+            color: white;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #833ab4,
+                    #e1306c,
+                    #fd1d1d
+                );
+
+            box-shadow:
+                0 10px 30px rgba(225,48,108,0.20);
+        }
+
+
+        .btn-secondary {
+
+            color: #ffffff;
+
+            background:
+                rgba(255,255,255,0.06);
+
+            border:
+                1px solid rgba(255,255,255,0.12);
+        }
+
+
+        .btn:hover {
+
+            transform: translateY(-4px);
+
+            box-shadow:
+                0 15px 35px rgba(0,0,0,0.35);
+        }
+
+
+        /* ==================================================
+           FOOTER
+           ================================================== */
+
+        .footer-note {
+
+            text-align: center;
+
+            color: #625d6b;
+
+            margin-top: 25px;
+
+            font-size: 12px;
+
+            letter-spacing: 0.5px;
+        }
+
+
+        /* ==================================================
+           ANIMATIONS
+           ================================================== */
+
+        @keyframes fadeDown {
+
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+        }
+
+
+        @keyframes fadeUp {
+
+            from {
+                opacity: 0;
+                transform: translateY(25px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+        }
+
+
+        /* ==================================================
+           MOBILE
+           ================================================== */
+
+        @media (max-width: 650px) {
+
+            .report-container {
+
+                width: 94%;
+
+                margin: 25px auto;
+            }
+
+
+            .report-card {
+
+                padding: 20px;
+
+                border-radius: 19px;
+            }
+
+
+            .score-circle {
+
+                width: 190px;
+
+                height: 190px;
+            }
+
+
+            .score-circle::before {
+
+                width: 155px;
+
+                height: 155px;
+            }
+
+
+            .score-number strong {
+
+                font-size: 48px;
+            }
+
+        }
+
+
+        /* ==================================================
+           PRINT
+           ================================================== */
+
+        @media print {
+
+            body {
+
+                background: white;
+
+                color: black;
+            }
+
+
+            body::before {
+
+                display: none;
+            }
+
+
+            .actions {
+
+                display: none;
+            }
+
+
+            .report-card {
+
+                background: white;
+
+                color: black;
+
+                box-shadow: none;
+
+                border: 1px solid #ddd;
+
+                break-inside: avoid;
+            }
+
+
+            .report-header h1 {
+
+                color: #111;
+
+                -webkit-text-fill-color: #111;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="report-container">
+
+
+    <!-- ==================================================
+         HEADER
+         ================================================== -->
+
+    <div class="report-header">
+
+        <div class="logo">
+
+            <span class="logo-dot"></span>
+
+            CyberShield Security Engine
+
+        </div>
+
+
+        <h1>
+            Security Report
+        </h1>
+
+
+        <p>
+            Professional Cybersecurity Assessment
+        </p>
+
+
+        <p class="scan-time">
+
+            Scan completed:
+            {{ scan_time }}
+
+        </p>
+
+    </div>
+
+
+    <!-- ==================================================
+         SECURITY SCORE
+         ================================================== -->
+
+    <div class="report-card">
+
+        <h2>
+            🛡️ Security Score
+        </h2>
+
+
+        <div class="score-section">
+
+            <div class="score-circle">
+
+                <div class="score-number">
+
+                    <strong>
+                        {{ score }}
+                    </strong>
+
+                    <span>
+                        SECURITY SCORE / 100
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="risk">
+
+                Risk Level:
+                {{ risk }}
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ==================================================
+         SYSTEM INFORMATION
+         ================================================== -->
+
+    <div class="report-card">
+
+        <h2>
+            🖥️ System Information
+        </h2>
+
+
+        <div class="info-grid">
+
+
+            <div class="info-box">
+
+                <div class="label">
+                    Operating System
+                </div>
+
+                <div class="value">
+                    {{ system }}
+                </div>
+
+            </div>
+
+
+            <div class="info-box">
+
+                <div class="label">
+                    System Version
+                </div>
+
+                <div class="value">
+                    {{ version }}
+                </div>
+
+            </div>
+
+
+            <div class="info-box">
+
+                <div class="label">
+                    Processor
+                </div>
+
+                <div class="value">
+                    {{ processor }}
+                </div>
+
+            </div>
+
+
+            <div class="info-box">
+
+                <div class="label">
+                    Architecture
+                </div>
+
+                <div class="value">
+                    {{ architecture }}
+                </div>
+
+            </div>
+
+
+            <div class="info-box">
+
+                <div class="label">
+                    Computer Name
+                </div>
+
+                <div class="value">
+                    {{ hostname }}
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    <!-- ==================================================
+         NETWORK
+         ================================================== -->
+
+    <div class="report-card">
+
+        <h2>
+            🌐 Network Information
+        </h2>
+
+
+        <div class="info-grid">
+
+
+            <div class="info-box">
+
+                <div class="label">
+                    Hostname
+                </div>
+
+                <div class="value">
+                    {{ hostname }}
+                </div>
+
+            </div>
+
+
+            <div class="info-box">
+
+                <div class="label">
+                    Local IP Address
+                </div>
+
+                <div class="value">
+                    {{ local_ip }}
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    <!-- ==================================================
+         OPEN PORTS
+         ================================================== -->
+
+    <div class="report-card">
+
+        <h2>
+            🔌 Open Port Assessment
+        </h2>
+
+
+        <div class="info-grid">
+
+            <div class="info-box">
+
+                <div class="label">
+                    Tested Open Ports
+                </div>
+
+                <div class="value">
+                    {{ open_ports_count }}
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <br>
+
+
+        {% if open_ports_count > 0 %}
+
+            <div class="ports-list">
+
+                {% for port in open_ports %}
+
+                    <div class="port">
+
+                        PORT {{ port }}
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <div class="no-ports">
+
+                ✓ No tested local ports were found open.
+
+            </div>
+
+        {% endif %}
+
+
+    </div>
+
+
+    <!-- ==================================================
+         FIREWALL
+         ================================================== -->
+
+    <div class="report-card">
+
+        <h2>
+            🔥 Firewall Protection
+        </h2>
+
+
+        <div class="info-grid">
+
+
+            <div class="info-box">
+
+                <div class="label">
+                    Windows Firewall
+                </div>
+
+                <div class="value">
+
+                    {% if firewall_status == "ENABLED" %}
+
+                        <span class="status enabled">
+
+                            ● {{ firewall_status }}
+
+                        </span>
+
+                    {% elif firewall_status == "DISABLED" %}
+
+                        <span class="status disabled">
+
+                            ● {{ firewall_status }}
+
+                        </span>
+
+                    {% else %}
+
+                        <span class="status unknown">
+
+                            ● {{ firewall_status }}
+
+                        </span>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    <!-- ==================================================
+         RECOMMENDATIONS
+         ================================================== -->
+
+    <div class="report-card">
+
+        <h2>
+            💡 Security Recommendations
+        </h2>
+
+
+        <ul class="recommendations">
+
+            {% for recommendation in recommendations %}
+
+                <li>
+
+                    {{ recommendation }}
+
+                </li>
+
+            {% endfor %}
+
+        </ul>
+
+    </div>
+
+
+    <!-- ==================================================
+         ACTIONS
+         ================================================== -->
+
+    <div class="actions">
+
+
+        <button
+            class="btn btn-primary"
+            onclick="window.print()">
+
+            🖨️ Print / Save as PDF
+
+        </button>
+
+
+        <a
+            href="{{ url_for('home') }}"
+            class="btn btn-secondary">
+
+            ← Dashboard
+
+        </a>
+
+
+    </div>
+
+
+    <div class="footer-note">
+
+        CYBERSHIELD MINI
+        •
+        Security Assessment Platform
+
+    </div>
+
+
+</div>
+
+
+</body>
+
+</html>

@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberShield Mini | Network Configuration</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        /* =========================================================
+           CYBERSHIELD MINI — NETWORK CONFIGURATION
+           POWERFUL EDITION
+           ========================================================= */
+
+        .network-page {
+            min-height: 100vh;
+            padding: 28px 4%;
+            position: relative;
+            z-index: 5;
+        }
+
+        /* ================= TOP BAR ================= */
+        .network-topbar {
+            max-width: 1420px;
+            margin: 0 auto 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            padding: 16px 24px;
+            background: linear-gradient(135deg, rgba(8, 20, 40, 0.95), rgba(3, 9, 22, 0.92));
+            border: 1px solid rgba(34, 211, 238, 0.18);
+            border-radius: 18px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 18px 50px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+        }
+
+        .network-brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .network-brand-icon {
+            width: 50px;
+            height: 50px;
+            display: grid;
+            place-items: center;
+            border-radius: 13px;
+            background: linear-gradient(145deg, rgba(34, 211, 238, 0.15), rgba(56, 189, 248, 0.06));
+            border: 1px solid rgba(34, 211, 238, 0.4);
+            box-shadow: 0 0 25px rgba(34, 211, 238, 0.18);
+        }
+
+        .network-brand-icon svg {
+            width: 26px;
+            height: 26px;
+            fill: none;
+            stroke: #22d3ee;
+            stroke-width: 1.6;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            filter: drop-shadow(0 0 6px rgba(34, 211, 238, 0.5));
+        }
+
+        .network-brand h1 {
+            margin: 0;
+            font-size: 20px;
+            letter-spacing: 2.2px;
+            color: #f8fafc;
+            font-weight: 800;
+        }
+
+        .network-brand h1 span {
+            color: #22d3ee;
+            text-shadow: 0 0 15px rgba(34, 211, 238, 0.45);
+        }
+
+        .network-brand p {
+            margin: 3px 0 0;
+            font-size: 10px;
+            letter-spacing: 2.8px;
+            color: #647b94;
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 16px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.4px;
+        }
+
+        .status-badge.online {
+            background: rgba(34, 197, 94, 0.07);
+            border: 1px solid rgba(34, 197, 94, 0.22);
+            color: #86efac;
+        }
+
+        .status-badge.module {
+            background: rgba(34, 211, 238, 0.07);
+            border: 1px solid rgba(34, 211, 238, 0.22);
+            color: #67e8f9;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: onlinePulse 1.9s ease-in-out infinite;
+        }
+
+        .status-badge.online .status-dot {
+            background: #22c55e;
+            box-shadow: 0 0 10px #22c55e, 0 0 18px rgba(34, 197, 94, 0.6);
+        }
+
+        .status-badge.module .status-dot {
+            background: #22d3ee;
+            box-shadow: 0 0 10px #22d3ee, 0 0 18px rgba(34, 211, 238, 0.6);
+        }
+
+        @keyframes onlinePulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.72); }
+        }
+
+        /* ================= MAIN CONTAINER ================= */
+        .network-container {
+            max-width: 1420px;
+            margin: 0 auto;
+        }
+
+        /* ================= HERO ================= */
+        .network-hero {
+            position: relative;
+            padding: 42px 36px;
+            border-radius: 22px;
+            overflow: hidden;
+            background:
+                radial-gradient(circle at 50% 15%, rgba(34, 211, 238, 0.12), transparent 42%),
+                linear-gradient(145deg, rgba(5, 16, 35, 0.96), rgba(2, 8, 20, 0.97));
+            border: 1px solid rgba(34, 211, 238, 0.2);
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.45), inset 0 0 60px rgba(34, 211, 238, 0.03);
+            text-align: center;
+        }
+
+        .network-hero::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #22d3ee, transparent);
+            opacity: 0.75;
+        }
+
+        .hero-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 15px;
+            border-radius: 999px;
+            background: rgba(34, 211, 238, 0.08);
+            border: 1px solid rgba(34, 211, 238, 0.25);
+            color: #67e8f9;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 2.2px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-tag span {
+            color: #22d3ee;
+        }
+
+        .network-hero h2 {
+            margin: 16px 0 10px;
+            font-size: clamp(28px, 4vw, 42px);
+            letter-spacing: 3px;
+            color: #f8fafc;
+            font-weight: 800;
+            text-shadow: 0 0 30px rgba(34, 211, 238, 0.2);
+            position: relative;
+            z-index: 2;
+        }
+
+        .network-hero p {
+            max-width: 680px;
+            margin: 0 auto;
+            color: #6b849c;
+            font-size: 14px;
+            line-height: 1.7;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-meta {
+            margin-top: 26px;
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-meta-item {
+            text-align: center;
+        }
+
+        .hero-meta-item span {
+            display: block;
+            font-size: 9px;
+            letter-spacing: 1.6px;
+            color: #4a6780;
+            margin-bottom: 4px;
+        }
+
+        .hero-meta-item strong {
+            font-size: 13px;
+            letter-spacing: 1px;
+            color: #94a9be;
+        }
+
+        .hero-meta-item strong.green {
+            color: #4ade80;
+        }
+
+        /* ================= QUICK STATS ================= */
+        .network-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin-top: 22px;
+        }
+
+        .stat-box {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 16px 18px;
+            border-radius: 14px;
+            background: linear-gradient(145deg, rgba(8, 18, 35, 0.92), rgba(4, 10, 22, 0.95));
+            border: 1px solid rgba(34, 211, 238, 0.12);
+            transition: 0.25s ease;
+        }
+
+        .stat-box:hover {
+            transform: translateY(-3px);
+            border-color: rgba(34, 211, 238, 0.3);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+        }
+
+        .stat-box-icon {
+            width: 42px;
+            height: 42px;
+            display: grid;
+            place-items: center;
+            border-radius: 11px;
+            flex-shrink: 0;
+        }
+
+        .stat-box-icon svg {
+            width: 20px;
+            height: 20px;
+            fill: none;
+            stroke-width: 1.6;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .stat-box-icon.cyan { background: rgba(34, 211, 238, 0.1); border: 1px solid rgba(34, 211, 238, 0.25); }
+        .stat-box-icon.cyan svg { stroke: #22d3ee; }
+        .stat-box-icon.blue { background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.25); }
+        .stat-box-icon.blue svg { stroke: #38bdf8; }
+        .stat-box-icon.purple { background: rgba(168, 85, 247, 0.1); border: 1px solid rgba(168, 85, 247, 0.25); }
+        .stat-box-icon.purple svg { stroke: #a855f7; }
+        .stat-box-icon.green { background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.25); }
+        .stat-box-icon.green svg { stroke: #22c55e; }
+
+        .stat-box span {
+            display: block;
+            font-size: 9px;
+            letter-spacing: 1.4px;
+            color: #5a738a;
+            margin-bottom: 3px;
+        }
+
+        .stat-box strong {
+            font-size: 13px;
+            letter-spacing: 0.5px;
+            color: #d1e0ef;
+            word-break: break-all;
+        }
+
+        /* ================= SECTION TITLE ================= */
+        .section-title {
+            margin: 28px 0 14px;
+            display: flex;
+            align-items: end;
+            justify-content: space-between;
+        }
+
+        .section-title > div:first-child span {
+            display: block;
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 3px;
+            color: #e0f2fe;
+        }
+
+        .section-title > div:first-child small {
+            display: block;
+            margin-top: 3px;
+            font-size: 9px;
+            letter-spacing: 1.5px;
+            color: #5a738a;
+        }
+
+        .section-title .count {
+            font-size: 10px;
+            letter-spacing: 1.5px;
+            color: #4a6780;
+        }
+
+        /* ================= NETWORK GRID ================= */
+        .network-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .network-card {
+            position: relative;
+            padding: 22px;
+            min-height: 175px;
+            border-radius: 16px;
+            background: linear-gradient(150deg, rgba(9, 20, 40, 0.96), rgba(4, 10, 22, 0.95));
+            border: 1px solid rgba(34, 211, 238, 0.12);
+            overflow: hidden;
+            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .network-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 100%;
+            background: var(--card-accent, #22d3ee);
+            box-shadow: 0 0 15px var(--card-accent, #22d3ee);
+            opacity: 0.7;
+        }
+
+        .network-card::after {
+            content: "";
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            right: -50px;
+            bottom: -55px;
+            background: var(--card-accent, #22d3ee);
+            opacity: 0.05;
+            border-radius: 50%;
+            filter: blur(22px);
+            transition: 0.35s ease;
+        }
+
+        .network-card:hover {
+            transform: translateY(-6px);
+            border-color: color-mix(in srgb, var(--card-accent, #22d3ee) 45%, transparent);
+            box-shadow: 0 18px 45px rgba(0, 0, 0, 0.35), 0 0 25px color-mix(in srgb, var(--card-accent, #22d3ee) 12%, transparent);
+        }
+
+        .network-card:hover::after {
+            opacity: 0.12;
+            transform: scale(1.3);
+        }
+
+        .network-card.cyan   { --card-accent: #22d3ee; }
+        .network-card.blue   { --card-accent: #38bdf8; }
+        .network-card.purple { --card-accent: #a855f7; }
+        .network-card.green  { --card-accent: #22c55e; }
+        .network-card.orange { --card-accent: #f59e0b; }
+        .network-card.red    { --card-accent: #ef4444; }
+        .network-card.pink   { --card-accent: #ec4899; }
+        .network-card.indigo { --card-accent: #6366f1; }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .card-icon {
+            width: 44px;
+            height: 44px;
+            display: grid;
+            place-items: center;
+            border-radius: 12px;
+            background: color-mix(in srgb, var(--card-accent, #22d3ee) 10%, transparent);
+            border: 1px solid color-mix(in srgb, var(--card-accent, #22d3ee) 28%, transparent);
+        }
+
+        .card-icon svg {
+            width: 22px;
+            height: 22px;
+            fill: none;
+            stroke: var(--card-accent, #22d3ee);
+            stroke-width: 1.55;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            filter: drop-shadow(0 0 6px color-mix(in srgb, var(--card-accent, #22d3ee) 50%, transparent));
+        }
+
+        .card-number {
+            font-family: ui-monospace, monospace;
+            color: #3d556c;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .card-title {
+            color: #7a93ab;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            margin-bottom: 10px;
+        }
+
+        .card-value {
+            color: #e8f0f8;
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 1.45;
+            word-break: break-word;
+            position: relative;
+            z-index: 2;
+        }
+
+        .status-value {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #4ade80;
+        }
+
+        .small-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #22c55e;
+            box-shadow: 0 0 10px #22c55e;
+        }
+
+        /* ================= EXTRA CONTEXT ================= */
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            margin-top: 16px;
+        }
+
+        .detail-card {
+            padding: 18px 20px;
+            border-radius: 14px;
+            background: linear-gradient(145deg, rgba(8, 18, 35, 0.9), rgba(4, 10, 22, 0.94));
+            border: 1px solid rgba(34, 211, 238, 0.1);
+            transition: 0.25s ease;
+        }
+
+        .detail-card:hover {
+            border-color: rgba(34, 211, 238, 0.28);
+            transform: translateY(-3px);
+        }
+
+        .detail-card .label {
+            font-size: 9px;
+            letter-spacing: 1.5px;
+            color: #5a738a;
+            margin-bottom: 6px;
+        }
+
+        .detail-card .value {
+            font-size: 14px;
+            font-weight: 700;
+            color: #c5d4e3;
+            letter-spacing: 0.5px;
+        }
+
+        /* ================= COMPLETION ================= */
+        .network-complete {
+            margin-top: 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            padding: 18px 24px;
+            border-radius: 16px;
+            background: rgba(34, 197, 94, 0.04);
+            border: 1px solid rgba(34, 197, 94, 0.15);
+        }
+
+        .complete-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .complete-icon {
+            width: 40px;
+            height: 40px;
+            display: grid;
+            place-items: center;
+            border-radius: 11px;
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.25);
+            color: #22c55e;
+        }
+
+        .complete-icon svg {
+            width: 20px;
+            height: 20px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2.2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .complete-text strong {
+            display: block;
+            color: #86efac;
+            font-size: 12px;
+            letter-spacing: 1.3px;
+        }
+
+        .complete-text span {
+            display: block;
+            margin-top: 3px;
+            color: #4a6780;
+            font-size: 11px;
+        }
+
+        .scan-time {
+            color: #5a738a;
+            font-size: 10px;
+            letter-spacing: 1.2px;
+            text-align: right;
+        }
+
+        /* ================= BACK BUTTON ================= */
+        .back-area {
+            margin-top: 28px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 13px 24px;
+            border-radius: 12px;
+            color: #8fa3b8;
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1.3px;
+            background: rgba(10, 20, 38, 0.8);
+            border: 1px solid rgba(34, 211, 238, 0.15);
+            transition: all 0.28s ease;
+        }
+
+        .back-button:hover {
+            color: #22d3ee;
+            border-color: rgba(34, 211, 238, 0.4);
+            background: rgba(34, 211, 238, 0.08);
+            box-shadow: 0 0 25px rgba(34, 211, 238, 0.1);
+            transform: translateY(-3px);
+        }
+
+        /* ================= FOOTER ================= */
+        .network-footer {
+            max-width: 1420px;
+            margin: 28px auto 0;
+            padding: 18px 6px;
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            color: #3a5268;
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            border-top: 1px solid rgba(34, 211, 238, 0.08);
+        }
+
+        .footer-live {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .footer-live span {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #22c55e;
+            box-shadow: 0 0 9px #22c55e;
+        }
+
+        /* ================= RESPONSIVE ================= */
+        @media (max-width: 1200px) {
+            .network-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 1100px) {
+            .network-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .details-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 800px) {
+            .network-topbar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 14px;
+            }
+            .topbar-right {
+                width: 100%;
+                flex-direction: column;
+            }
+            .status-badge {
+                width: 100%;
+                justify-content: center;
+            }
+            .network-hero {
+                padding: 32px 22px;
+            }
+            .hero-meta {
+                gap: 20px;
+            }
+            .network-complete {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .scan-time {
+                text-align: left;
+                padding-left: 54px;
+            }
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .network-page {
+                padding: 18px 4%;
+            }
+            .network-brand h1 {
+                font-size: 16px;
+            }
+            .network-brand p {
+                font-size: 8px;
+            }
+            .network-hero h2 {
+                font-size: 26px;
+                letter-spacing: 2px;
+            }
+            .network-stats {
+                grid-template-columns: 1fr;
+            }
+            .network-grid {
+                grid-template-columns: 1fr;
+            }
+            .network-footer {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Background -->
+    <div class="cyber-grid"></div>
+    <div class="ambient ambient-1"></div>
+    <div class="ambient ambient-2"></div>
+    <div class="ambient ambient-3"></div>
+
+    <main class="network-page">
+
+        <!-- ================= TOP BAR ================= -->
+        <header class="network-topbar">
+            <div class="network-brand">
+                <div class="network-brand-icon">
+                    <svg viewBox="0 0 24 24">
+                        <circle cx="12" cy="5" r="2"></circle>
+                        <circle cx="5" cy="19" r="2"></circle>
+                        <circle cx="19" cy="19" r="2"></circle>
+                        <path d="M12 7V12"></path>
+                        <path d="M12 12L5 17"></path>
+                        <path d="M12 12L19 17"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h1>CYBERSHIELD <span>MINI</span></h1>
+                    <p>NETWORK CONFIGURATION • LOCAL ANALYSIS ENGINE</p>
+                </div>
+            </div>
+
+            <div class="topbar-right">
+                <div class="status-badge module">
+                    <span class="status-dot"></span>
+                    MODULE 02 ACTIVE
+                </div>
+                <div class="status-badge online">
+                    <span class="status-dot"></span>
+                    NETWORK SCAN ACTIVE
+                </div>
+            </div>
+        </header>
+
+        <div class="network-container">
+
+            <!-- ================= HERO ================= -->
+            <section class="network-hero">
+                <div class="hero-tag">
+                    <span>◉</span> NETWORK INTELLIGENCE
+                </div>
+
+                <h2>NETWORK CONFIGURATION</h2>
+
+                <p>
+                    Local network interface analysis completed.
+                    CyberShield Mini has collected detailed adapter, IP, and routing information
+                    to establish the current network security posture.
+                </p>
+
+                <div class="hero-meta">
+                    <div class="hero-meta-item">
+                        <span>STATUS</span>
+                        <strong class="green">SCAN COMPLETE</strong>
+                    </div>
+                    <div class="hero-meta-item">
+                        <span>ENGINE</span>
+                        <strong>LOCAL READ-ONLY</strong>
+                    </div>
+                    <div class="hero-meta-item">
+                        <span>MODULE</span>
+                        <strong>NET-02</strong>
+                    </div>
+                    <div class="hero-meta-item">
+                        <span>SCOPE</span>
+                        <strong>FULL INTERFACE</strong>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= QUICK STATS ================= -->
+            <section class="network-stats">
+                <div class="stat-box">
+                    <div class="stat-box-icon cyan">
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="2"></circle><circle cx="5" cy="19" r="2"></circle><circle cx="19" cy="19" r="2"></circle><path d="M12 7V12"></path><path d="M12 12L5 17"></path><path d="M12 12L19 17"></path></svg>
+                    </div>
+                    <div>
+                        <span>NETWORK ADAPTER</span>
+                        <strong>{{ network_adapter|default('Unknown', true)|truncate(24, True, '...') }}</strong>
+                    </div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-box-icon blue">
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M2 12H22"></path><path d="M12 2C14.5 6 14.5 18 12 22"></path><path d="M12 2C9.5 6 9.5 18 12 22"></path></svg>
+                    </div>
+                    <div>
+                        <span>IPv4 ADDRESS</span>
+                        <strong>{{ local_ip|default('Unknown', true) }}</strong>
+                    </div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-box-icon purple">
+                        <svg viewBox="0 0 24 24"><path d="M12 2L20 6V12C20 17 16.5 20 12 22C7.5 20 4 17 4 12V6L12 2Z"></path></svg>
+                    </div>
+                    <div>
+                        <span>GATEWAY</span>
+                        <strong>{{ gateway|default('Unknown', true) }}</strong>
+                    </div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-box-icon green">
+                        <svg viewBox="0 0 24 24"><path d="M12 2V6"></path><path d="M12 18V22"></path><path d="M4.9 4.9L7.7 7.7"></path><path d="M16.3 16.3L19.1 19.1"></path><path d="M2 12H6"></path><path d="M18 12H22"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                    </div>
+                    <div>
+                        <span>DHCP STATUS</span>
+                        <strong>{{ dhcp_status|default('Unknown', true) }}</strong>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= DETAILED CARDS ================= -->
+            <div class="section-title">
+                <div>
+                    <span>NETWORK INTERFACE DETAILS</span>
+                    <small>ADAPTER • ADDRESSING • ROUTING • IDENTITY</small>
+                </div>
+                <div class="count">08 PARAMETERS</div>
+            </div>
+
+            <section class="network-grid">
+
+                <!-- Computer Name -->
+                <article class="network-card cyan">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <svg viewBox="0 0 24 24">
+                                <rect x="3" y="4" width="18" height="13" rx="2"></rect>
+                                <path d="M8 21H16"></path>
+                                <path d="M12 17V21"></path>
+                            </svg>
+                        </div>
+                        <div class="card-number">NET-01</div>
+                    </div>
+                    <div class="card-title">COMPUTER NAME</div>
+                    <div class="card-value">{{ hostname|default('Unknown', true) }}</div>
+                </article>
+
+                <!-- IPv4 -->
+                <article class="network-card blue">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <svg viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M2 12H22"></path>
+                                <path d="M12 2C14.5 6 14.5 18 12 22"></path>
+                                <path d="M12 2C9.5 6 9.5 18 12 22"></path>
+                            </svg>
+                        </div>
+                        <div class="card-number">NET-02</div>
+                    </div>
+                    <div class="card-title">IPv4 ADDRESS</div>
+                    <div class="card-value">{{ local_ip|default('Unknown', true) }}</div>
+                </article>
+
+                <!-- MAC -->
+                <article class="network-card purple">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                            </svg>
+                        </div>
+                        <div class="card-number">NET-03</div>
+                    </div>
+                    <div class="card-title">MAC ADDRESS</div>
+                    <div class="card-value">{{ mac_address|default('Unknown', true) }}</div>
+                </article>
+
+                <!-- Gateway -->
+                <article class="network-card green">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M3 9L12 2L21 9V20C21 20.5 20.5 21 20 21H4C3.5 21 3 20.5 3 20V9Z"></path>
+                                <path d="M9 21V12H15V21"></path>
+                            </svg>
+                        </div>
+                        <div class="card-number">NET-04</div>
+                    </div>
+                    <div class="card-title">DEFAULT GATEWAY</div>
+                    <div class="card-value">{{ gateway|default('Unknown', true) }}</div>
+                </article>
+
+                <!-- DNS -->
+                <article class="network-card orange">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <svg viewBox="0 0 24 24">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <path d="M21 21L16.65 16.65"></path>
+                            </svg>
+                        </div>
+                        <div class="card-number">NET-05</div>
+                    </div>
+                    <div class="card-title">DNS SERVER</div>
+                    <div class="card-value">{{ dns_server|default('Unknown', true) }}</div>
+                </article>
+
+                <!-- Network Adapter -->
+                <article class="network-card red">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M5 12.5C5 10 7 8 9.5 8H14.5C17 8 19 10 19 12.5C19 15 17 17 14.5 17H9.5C7 17 5 15 5 12.5Z"></path>
+                                <path d="M8 12H16"></path>
+                            </svg>
+                        </div>
+                        <div class="card-number">NET-06</div>
+                    </div>
+                    <div class="card-title">NETWORK ADAPTER</div>
+                    <div class="card-value">{{ network_adapter|default('Unknown', true) }}</div>
+                </article>
+
+                <!-- DHCP -->
+                <article class="network-card pink">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <svg viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="3"></circle>
+                                <path d="M12 2V6"></path>
+                                <path d="M12 18V22"></path>
+                                <path d="M4.9 4.9L7.7 7.7"></path>
+                                <path d="M16.3 16.3L19.1 19.1"></path>
+                                <path d="M2 12H6"></path>
+                                <path d="M18 12H22"></path>
+                            </svg>
+                        </div>
+                        <div class="card-number">NET-07</div>
+                    </div>
+                    <div class="card-title">DHCP STATUS</div>
+                    <div class="card-value status-value">
+                        <span class="small-dot"></span>
+                        {{ dhcp_status|default('Unknown', true) }}
+                    </div>
+                </article>
+
+                <!-- IPv6 -->
+                <article class="network-card indigo">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <svg viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M2 12H22"></path>
+                                <path d="M12 2C15 6 15 18 12 22"></path>
+                                <path d="M12 2C9 6 9 18 12 22"></path>
+                            </svg>
+                        </div>
+                        <div class="card-number">NET-08</div>
+                    </div>
+                    <div class="card-title">IPv6 ADDRESS</div>
+                    <div class="card-value">{{ ipv6_address|default('Unknown', true) }}</div>
+                </article>
+
+            </section>
+
+            <!-- ================= EXTRA CONTEXT ================= -->
+            <div class="section-title">
+                <div>
+                    <span>NETWORK CONTEXT</span>
+                    <small>ANALYSIS SCOPE & ENGINE STATUS</small>
+                </div>
+            </div>
+
+            <section class="details-grid">
+                <div class="detail-card">
+                    <div class="label">ANALYSIS MODE</div>
+                    <div class="value">LOCAL • READ-ONLY</div>
+                </div>
+                <div class="detail-card">
+                    <div class="label">DATA SOURCE</div>
+                    <div class="value">SYSTEM NETWORK API</div>
+                </div>
+                <div class="detail-card">
+                    <div class="label">INTERFACE SCOPE</div>
+                    <div class="value">PRIMARY ADAPTER</div>
+                </div>
+                <div class="detail-card">
+                    <div class="label">SCAN TYPE</div>
+                    <div class="value">PASSIVE INSPECTION</div>
+                </div>
+                <div class="detail-card">
+                    <div class="label">ENGINE STATUS</div>
+                    <div class="value">OPERATIONAL</div>
+                </div>
+                <div class="detail-card">
+                    <div class="label">MODULE VERSION</div>
+                    <div class="value">NET-CONFIG v2.0</div>
+                </div>
+            </section>
+
+            <!-- ================= COMPLETION ================= -->
+            <section class="network-complete">
+                <div class="complete-left">
+                    <div class="complete-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M5 12L10 17L19 7"></path>
+                        </svg>
+                    </div>
+                    <div class="complete-text">
+                        <strong>NETWORK CONFIGURATION COLLECTED</strong>
+                        <span>Local network interface inspection completed successfully. All primary parameters retrieved.</span>
+                    </div>
+                </div>
+                <div class="scan-time">
+                    LOCAL ENGINE • READ ONLY<br>
+                    NO EXTERNAL REQUESTS
+                </div>
+            </section>
+
+            <!-- ================= BACK ================= -->
+            <div class="back-area">
+                <a href="{{ url_for('home') }}" class="back-button">
+                    ← BACK TO SECURITY CENTER
+                </a>
+            </div>
+
+        </div>
+
+        <!-- ================= FOOTER ================= -->
+        <footer class="network-footer">
+            <div>
+                CYBERSHIELD MINI
+                <span>•</span>
+                NETWORK CONFIGURATION
+                <span>•</span>
+                v2.0 PRO
+            </div>
+            <div class="footer-live">
+                <span></span>
+                LOCAL ENGINE ONLINE
+            </div>
+        </footer>
+
+    </main>
+
+</body>
+</html>

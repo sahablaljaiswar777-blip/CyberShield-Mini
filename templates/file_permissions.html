@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>File Security Report | CyberShield Mini</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+
+        /* ==================================================
+           PAGE
+        ================================================== */
+
+        body {
+            background:
+                radial-gradient(circle at top left, rgba(0, 180, 255, 0.12), transparent 35%),
+                radial-gradient(circle at bottom right, rgba(0, 255, 150, 0.08), transparent 35%),
+                #050b14;
+
+            color: #eaf6ff;
+        }
+
+
+        .permission-container {
+            max-width: 1050px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+
+        /* ==================================================
+           HEADER
+        ================================================== */
+
+        .permission-header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+
+        .permission-header h1 {
+            font-size: 38px;
+            margin-bottom: 10px;
+
+            background: linear-gradient(
+                90deg,
+                #00c8ff,
+                #00ff9d
+            );
+
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+
+        .permission-header p {
+            color: #8fa8ba;
+            font-size: 16px;
+        }
+
+
+        /* ==================================================
+           CARD
+        ================================================== */
+
+        .permission-card {
+
+            background: rgba(7, 18, 32, 0.88);
+
+            border: 1px solid rgba(0, 200, 255, 0.25);
+
+            border-radius: 20px;
+
+            padding: 30px;
+
+            margin-bottom: 25px;
+
+            box-shadow:
+                0 0 30px rgba(0, 170, 255, 0.08),
+                inset 0 0 25px rgba(0, 170, 255, 0.03);
+
+            backdrop-filter: blur(12px);
+
+            animation: cardAppear 0.6s ease;
+        }
+
+
+        @keyframes cardAppear {
+
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+        }
+
+
+        /* ==================================================
+           INPUT
+        ================================================== */
+
+        .path-form {
+
+            display: flex;
+
+            gap: 12px;
+
+            flex-wrap: wrap;
+        }
+
+
+        .path-input {
+
+            flex: 1;
+
+            min-width: 280px;
+
+            padding: 15px;
+
+            border-radius: 12px;
+
+            border: 1px solid #21425d;
+
+            background: #040b13;
+
+            color: white;
+
+            font-size: 15px;
+
+            outline: none;
+
+            transition: 0.3s;
+        }
+
+
+        .path-input:focus {
+
+            border-color: #00c8ff;
+
+            box-shadow:
+                0 0 15px rgba(0, 200, 255, 0.25);
+        }
+
+
+        .scan-button {
+
+            padding: 15px 28px;
+
+            border: none;
+
+            border-radius: 12px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #0099ff,
+                    #00d4ff
+                );
+
+            color: white;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition: 0.3s;
+        }
+
+
+        .scan-button:hover {
+
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 0 20px rgba(0, 200, 255, 0.4);
+        }
+
+
+        /* ==================================================
+           SCAN LOADING
+        ================================================== */
+
+        .scan-loader {
+
+            display: none;
+
+            margin-top: 20px;
+        }
+
+
+        .scan-loader.active {
+
+            display: block;
+        }
+
+
+        .loader-text {
+
+            color: #00c8ff;
+
+            font-size: 14px;
+
+            margin-bottom: 8px;
+        }
+
+
+        .loader-line {
+
+            width: 100%;
+
+            height: 5px;
+
+            background: #122235;
+
+            border-radius: 20px;
+
+            overflow: hidden;
+        }
+
+
+        .loader-progress {
+
+            width: 0%;
+
+            height: 100%;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #00a8ff,
+                    #00ff9d
+                );
+
+            border-radius: 20px;
+
+            animation: loading 1.8s ease forwards;
+        }
+
+
+        @keyframes loading {
+
+            0% {
+                width: 0%;
+            }
+
+            50% {
+                width: 65%;
+            }
+
+            100% {
+                width: 100%;
+            }
+
+        }
+
+
+        /* ==================================================
+           REPORT TITLE
+        ================================================== */
+
+        .report-title {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            margin-bottom: 25px;
+        }
+
+
+        .report-title span {
+
+            font-size: 30px;
+        }
+
+
+        /* ==================================================
+           REPORT GRID
+        ================================================== */
+
+        .report-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 18px;
+        }
+
+
+        .report-item {
+
+            background: rgba(4, 12, 22, 0.85);
+
+            border: 1px solid #1b344a;
+
+            border-radius: 14px;
+
+            padding: 20px;
+
+            transition: 0.3s;
+        }
+
+
+        .report-item:hover {
+
+            border-color: #00bfff;
+
+            transform: translateY(-3px);
+
+            box-shadow:
+                0 0 18px rgba(0, 190, 255, 0.12);
+        }
+
+
+        .report-label {
+
+            color: #7892a6;
+
+            font-size: 12px;
+
+            margin-bottom: 8px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 1px;
+        }
+
+
+        .report-value {
+
+            font-size: 17px;
+
+            font-weight: bold;
+
+            word-break: break-word;
+        }
+
+
+        /* ==================================================
+           CIRCULAR SCORE
+        ================================================== */
+
+        .score-section {
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            margin: 40px 0;
+        }
+
+
+        .score-circle {
+
+            position: relative;
+
+            width: 230px;
+
+            height: 230px;
+
+            border-radius: 50%;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            background:
+                conic-gradient(
+                    #00ff9d
+                    calc(var(--score) * 1%),
+                    #13283a
+                    0
+                );
+
+            box-shadow:
+                0 0 30px rgba(0, 255, 157, 0.25);
+
+            animation: circleGlow 2s infinite alternate;
+        }
+
+
+        @keyframes circleGlow {
+
+            from {
+                box-shadow:
+                    0 0 15px rgba(0, 255, 157, 0.15);
+            }
+
+            to {
+                box-shadow:
+                    0 0 40px rgba(0, 255, 157, 0.35);
+            }
+
+        }
+
+
+        .score-circle::before {
+
+            content: "";
+
+            position: absolute;
+
+            width: 190px;
+
+            height: 190px;
+
+            border-radius: 50%;
+
+            background: #06101b;
+
+            box-shadow:
+                inset 0 0 20px rgba(0, 0, 0, 0.7);
+        }
+
+
+        .score-content {
+
+            position: relative;
+
+            z-index: 2;
+
+            text-align: center;
+        }
+
+
+        .score-number {
+
+            font-size: 42px;
+
+            font-weight: 800;
+
+            color: #ffffff;
+
+            text-shadow:
+                0 0 15px rgba(0, 255, 157, 0.6);
+        }
+
+
+        .score-percent {
+
+            font-size: 14px;
+
+            color: #7e9bad;
+
+            letter-spacing: 2px;
+        }
+
+
+        .score-label {
+
+            text-align: center;
+
+            color: #9ab0c0;
+
+            margin-top: -20px;
+
+            margin-bottom: 30px;
+
+            font-size: 14px;
+        }
+
+
+        /* ==================================================
+           MOVING DOT
+        ================================================== */
+
+        .score-circle::after {
+
+            content: "";
+
+            position: absolute;
+
+            width: 12px;
+
+            height: 12px;
+
+            background: #ffffff;
+
+            border-radius: 50%;
+
+            box-shadow:
+                0 0 12px #00ff9d,
+                0 0 25px #00ff9d;
+
+            top: 0;
+
+            left: 50%;
+
+            transform-origin: 0 115px;
+
+            animation:
+                rotateDot 3s linear infinite;
+        }
+
+
+        @keyframes rotateDot {
+
+            from {
+                transform:
+                    rotate(0deg)
+                    translateX(-6px);
+            }
+
+            to {
+                transform:
+                    rotate(360deg)
+                    translateX(-6px);
+            }
+
+        }
+
+
+        /* ==================================================
+           PERMISSION COLORS
+        ================================================== */
+
+        .permission-yes {
+
+            color: #00ff9d;
+
+            text-shadow:
+                0 0 8px rgba(0, 255, 157, 0.4);
+        }
+
+
+        .permission-no {
+
+            color: #ff4d67;
+
+            text-shadow:
+                0 0 8px rgba(255, 77, 103, 0.4);
+        }
+
+
+        /* ==================================================
+           RISK
+        ================================================== */
+
+        .risk-box {
+
+            text-align: center;
+
+            padding: 22px;
+
+            border-radius: 15px;
+
+            margin-top: 20px;
+
+            background: rgba(4, 12, 22, 0.9);
+
+            border: 1px solid #1b344a;
+        }
+
+
+        .risk-low {
+
+            color: #00ff9d;
+
+            font-size: 22px;
+
+            font-weight: bold;
+
+            text-shadow:
+                0 0 15px rgba(0, 255, 157, 0.5);
+        }
+
+
+        .risk-medium {
+
+            color: #ffd166;
+
+            font-size: 22px;
+
+            font-weight: bold;
+        }
+
+
+        .risk-high {
+
+            color: #ff4d67;
+
+            font-size: 22px;
+
+            font-weight: bold;
+
+            text-shadow:
+                0 0 15px rgba(255, 77, 103, 0.5);
+        }
+
+
+        /* ==================================================
+           BACK BUTTON
+        ================================================== */
+
+        .back-button {
+
+            display: inline-block;
+
+            padding: 12px 20px;
+
+            border-radius: 10px;
+
+            background: #122337;
+
+            color: white;
+
+            text-decoration: none;
+
+            transition: 0.3s;
+        }
+
+
+        .back-button:hover {
+
+            background: #1a3854;
+
+            transform: translateX(-3px);
+        }
+
+
+        /* ==================================================
+           RESPONSIVE
+        ================================================== */
+
+        @media (max-width: 700px) {
+
+            .report-grid {
+
+                grid-template-columns: 1fr;
+            }
+
+
+            .permission-header h1 {
+
+                font-size: 28px;
+            }
+
+
+            .score-circle {
+
+                width: 200px;
+
+                height: 200px;
+            }
+
+
+            .score-circle::before {
+
+                width: 165px;
+
+                height: 165px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="permission-container">
+
+
+    <!-- HEADER -->
+
+    <div class="permission-header">
+
+        <h1>🛡️ File Security Scanner</h1>
+
+        <p>
+            CyberShield Mini • File & Folder Permission Analysis
+        </p>
+
+    </div>
+
+
+    <!-- SCANNER -->
+
+    <div class="permission-card">
+
+        <h2>🔍 Scan Target</h2>
+
+        <br>
+
+        <form
+            method="POST"
+            action="{{ url_for('file_permission') }}"
+            class="path-form"
+            onsubmit="startScan()"
+        >
+
+            <input
+                type="text"
+                name="path"
+                class="path-input"
+                placeholder="C:\Users\Sanchit\Downloads"
+                required
+            >
+
+            <button
+                type="submit"
+                class="scan-button"
+            >
+                🚀 Analyze
+            </button>
+
+        </form>
+
+
+        <div
+            id="scanLoader"
+            class="scan-loader"
+        >
+
+            <div class="loader-text">
+                🔄 Analyzing file permissions...
+            </div>
+
+            <div class="loader-line">
+
+                <div class="loader-progress"></div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    {% if result %}
+
+    <!-- REPORT -->
+
+    <div class="permission-card">
+
+        <div class="report-title">
+
+            <span>📋</span>
+
+            <h2>FILE SECURITY REPORT</h2>
+
+        </div>
+
+
+        {% if result.type == "NOT FOUND" %}
+
+            <div class="permission-no">
+
+                ❌ Target not found.
+
+            </div>
+
+        {% else %}
+
+
+        <!-- BASIC INFORMATION -->
+
+        <div class="report-grid">
+
+
+            <div class="report-item">
+
+                <div class="report-label">
+                    Target Path
+                </div>
+
+                <div class="report-value">
+                    {{ result.path }}
+                </div>
+
+            </div>
+
+
+            <div class="report-item">
+
+                <div class="report-label">
+                    Target Type
+                </div>
+
+                <div class="report-value">
+                    📁 {{ result.type }}
+                </div>
+
+            </div>
+
+
+            <div class="report-item">
+
+                <div class="report-label">
+                    Read Permission
+                </div>
+
+                <div class="report-value">
+
+                    {% if result.read == "YES" %}
+
+                        <span class="permission-yes">
+                            ✓ YES
+                        </span>
+
+                    {% else %}
+
+                        <span class="permission-no">
+                            ✕ NO
+                        </span>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            <div class="report-item">
+
+                <div class="report-label">
+                    Write Permission
+                </div>
+
+                <div class="report-value">
+
+                    {% if result.write == "YES" %}
+
+                        <span class="permission-yes">
+                            ✓ YES
+                        </span>
+
+                    {% else %}
+
+                        <span class="permission-no">
+                            ✕ NO
+                        </span>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- CIRCULAR SCORE -->
+
+        <div class="score-section">
+
+            <div
+                class="score-circle"
+                style="--score: {{ result.score }};"
+            >
+
+                <div class="score-content">
+
+                    <div class="score-number">
+
+                        {{ result.score }}
+
+                        <span style="font-size: 20px;">
+                            / 100
+                        </span>
+
+                    </div>
+
+                    <div class="score-percent">
+                        SECURITY SCORE
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="score-label">
+
+            Permission Security Score
+
+        </div>
+
+
+        <!-- RISK -->
+
+        <div class="risk-box">
+
+            <div class="report-label">
+                SECURITY RISK LEVEL
+            </div>
+
+
+            {% if result.risk == "LOW" %}
+
+                <div class="risk-low">
+                    🟢 LOW RISK
+                </div>
+
+            {% elif result.risk == "MEDIUM" %}
+
+                <div class="risk-medium">
+                    🟡 MEDIUM RISK
+                </div>
+
+            {% else %}
+
+                <div class="risk-high">
+                    🔴 HIGH RISK
+                </div>
+
+            {% endif %}
+
+        </div>
+
+
+        {% endif %}
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- BACK -->
+
+    <a
+        href="{{ url_for('home') }}"
+        class="back-button"
+    >
+        ← Back to Dashboard
+    </a>
+
+
+</div>
+
+
+<script>
+
+function startScan() {
+
+    const loader =
+        document.getElementById("scanLoader");
+
+    loader.classList.add("active");
+
+}
+
+</script>
+
+
+</body>
+
+</html>
